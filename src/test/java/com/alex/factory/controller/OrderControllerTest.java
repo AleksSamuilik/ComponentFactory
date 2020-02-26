@@ -59,7 +59,7 @@ public class OrderControllerTest extends AbstractControllerTest {
                 .content("{\n" +
                         "\"isConfirmed\": \"true\"\n" +
                         "}"))
-                .andExpect(status().is(200));
+                .andExpect(status().isOk());
     }
 
     @Test

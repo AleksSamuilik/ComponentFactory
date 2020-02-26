@@ -55,7 +55,8 @@ public class AuthControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testSignInCompany() throws Exception {
+    @SneakyThrows
+    public void testSignInCompany() {
         mockMvc.perform(post("/componentFactory/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -67,7 +68,8 @@ public class AuthControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testSignInCompanyWrongPassword() throws Exception {
+    @SneakyThrows
+    public void testSignInCompanyWrongPassword() {
         mockMvc.perform(post("/componentFactory/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -78,7 +80,8 @@ public class AuthControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testSignInCompanyWrongEmail() throws Exception {
+    @SneakyThrows
+    public void testSignInCompanyWrongEmail() {
         mockMvc.perform(post("/componentFactory/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -90,7 +93,8 @@ public class AuthControllerTest extends AbstractControllerTest {
 
 
     @Test
-    public void testSignInFactoryFirst() throws Exception {
+    @SneakyThrows
+    public void testSignInFactoryFirst() {
         mockMvc.perform(post("/componentFactory/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -102,7 +106,8 @@ public class AuthControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testSignInFactorySecond() throws Exception {
+    @SneakyThrows
+    public void testSignInFactorySecond() {
         mockMvc.perform(post("/componentFactory/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +

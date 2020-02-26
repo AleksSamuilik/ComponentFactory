@@ -432,3 +432,56 @@ Request:
 Response:
 
 `200 OK`
+
+
+### B-22 Как "Администратор"  я хочу добавить еще продукты  в заказ
+
+Request: 
+
+`POST /bar/orders/add`
+
+```json
+{
+  "tableNumber" : 2,
+  "order" : 
+     [
+      {
+        "id" : 2,
+        "count" : 2
+      }
+    ]
+}
+```
+
+Response: `200 OK`
+
+### BS-11 Как "Клиент" я хочу просмотреть доступный ассортимент пива по крепости пива 5.7% , и в результате получаю список всего пива
+
+Request:
+
+`POST /beer-shop-app/catalog/alco`
+
+```json
+{
+  "alco" : "5.7%"
+}
+```
+
+RESPONSE: `200 OK`
+```json
+[
+    {
+      "id" : 1,
+      "title" : "Goose",
+      "description" : "Strong",
+      "alco" : "5.7%",
+      "price" : 5
+    },{
+      "id" : 4,
+      "title" : "Harbin",
+      "description" : "dark unfiltered",
+      "alco" : "5.7%",
+      "price" : 5
+    }
+]
+```

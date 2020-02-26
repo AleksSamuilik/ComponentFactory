@@ -96,7 +96,7 @@ public abstract class AbstractControllerTest {
                         "    \"startDate\": \"12.02.2020\",\n" +
                         "    \"endDate\": \"16.03.2020\"\n" +
                         "}"))
-                .andExpect(status().is(201))
+                .andExpect(status().isCreated())
                 .andExpect(content().json("{\n" +
                         " \"cost\": 756201,\n" +
                         "    \"startDate\": \"12.02.2020\",\n" +
@@ -111,7 +111,4 @@ public abstract class AbstractControllerTest {
     protected void deleteAllOrder() {
         orderRepository.deleteAll();
     }
-
-
-
 }
