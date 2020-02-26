@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: add company_description
+      author: sam
+      changes:
+        - createTable:
+            tableName: company_description
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: discount
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: info
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(40)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: add all data part1
+      author: sam
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: UTF-8
+            path: db/changelog/initDB1.sql
+
+  - changeSet:
+      id: add all data part2
+      author: sam
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: UTF-8
+            path: db/changelog/initDB2.sql
+
+  - changeSet:
+      id: add all data part3
+      author: sam
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: UTF-8
+            path: db/changelog/initDB3.sql

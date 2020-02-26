@@ -3,10 +3,12 @@ package com.alex.factory.controller;
 import com.alex.factory.dto.OrderDTO;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.repository.OrderRepository;
+import com.alex.factory.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +35,7 @@ public abstract class AbstractControllerTest {
     @Autowired
     private OrderRepository orderRepository;
 
+
     protected static final String TOKEN = "token";
 
     protected String tokenVasya;
@@ -40,7 +43,7 @@ public abstract class AbstractControllerTest {
     protected String tokenDima;
     protected String orderId;
 
-    @BeforeEach
+//    @BeforeEach
     private void init() {
         tokenVasya = signInAsVasya();
         tokenPetya = signInAsPetya();
@@ -108,5 +111,7 @@ public abstract class AbstractControllerTest {
     protected void deleteAllOrder() {
         orderRepository.deleteAll();
     }
+
+
 
 }
