@@ -481,7 +481,7 @@ RESPONSE: `200 OK`
       "title" : "Harbin",
       "description" : "dark unfiltered",
       "alco" : "5.7%",
-      "price" : 5
+      "price" : 11
     }
 ]
 ```
