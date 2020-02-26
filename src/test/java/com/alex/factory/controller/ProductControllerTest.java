@@ -1,5 +1,6 @@
 package com.alex.factory.controller;
 
+import com.alex.factory.repository.ProductRepository;
 import com.alex.factory.repository.UserRepository;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
@@ -22,8 +23,7 @@ public class ProductControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private UserRepository userRepository;
+
 
     @Test
     @SneakyThrows
@@ -68,15 +68,9 @@ public class ProductControllerTest extends AbstractControllerTest {
 
  @Test
  @SneakyThrows
-    public void testGetProductUnknown()  {
+    public void testGetProductUnknown() {
 
-        mockMvc.perform(get("/componentFactory/products/999999").header("Authorization", tokenVasya))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testConnection(){
-
-        log.info(String.valueOf(userRepository.findById(1l).get().toString()));
-    }
+     mockMvc.perform(get("/componentFactory/products/999999").header("Authorization", tokenVasya))
+             .andExpect(status().isBadRequest());
+ }
 }

@@ -89,18 +89,18 @@ public class OrderControllerTest extends AbstractControllerTest {
                 .andExpect(content().json("[\n" +
                         "{\n" +
                         " \"cost\": 756201,\n" +
-                        "    \"startDate\": \"11.02.2020\",\n" +
-                        "    \"endDate\": \"11.03.2020\",\n" +
+                        "    \"startDate\": \"12.02.2020\",\n" +
+                        "    \"endDate\": \"12.03.2020\",\n" +
                         "    \"status\": \"waits confirmation\"\n" +
                         "},{\n" +
                         " \"cost\": 756201,\n" +
-                        "    \"startDate\": \"11.02.2020\",\n" +
-                        "    \"endDate\": \"11.03.2020\",\n" +
+                        "    \"startDate\": \"12.02.2020\",\n" +
+                        "    \"endDate\": \"12.03.2020\",\n" +
                         "    \"status\": \"waits confirmation\"\n" +
                         "},{\n" +
                         " \"cost\": 756201,\n" +
-                        "    \"startDate\": \"11.02.2020\",\n" +
-                        "    \"endDate\": \"11.03.2020\",\n" +
+                        "    \"startDate\": \"12.02.2020\",\n" +
+                        "    \"endDate\": \"12.03.2020\",\n" +
                         "    \"status\": \"waits confirmation\"\n" +
                         "}]"));
     }
@@ -114,8 +114,8 @@ public class OrderControllerTest extends AbstractControllerTest {
         mockMvc.perform(get("/componentFactory/orders/" + orderId).header("Authorization", tokenDima))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
-                        "   \"startDate\":\"11.02.2020\",\n" +
-                        "   \"endDate\":\"11.03.2020\",\n" +
+                        "   \"startDate\":\"12.02.2020\",\n" +
+                        "   \"endDate\":\"12.03.2020\",\n" +
                         "   \"cost\":756201,\n" +
                         "   \"status\":\"waits confirmation\"\n" +
                         "}"));

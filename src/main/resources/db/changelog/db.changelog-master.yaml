@@ -1,7 +1,7 @@
 databaseChangeLog:
   - logicalFilePath: db/changelog/db.changelog-master.yaml
   - changeSet:
-      id: add company_description
+      id: add tables part 1
       author: sam
       changes:
         - createTable:
@@ -35,29 +35,513 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-  - changeSet:
-      id: add all data part1
-      author: sam
-      changes:
-        - sqlFile:
-            dbms: mysql
-            encoding: UTF-8
-            path: db/changelog/initDB1.sql
+        - createTable:
+            tableName: factory_description
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: position
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category
+                  type: varchar(180)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(180)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prime_cost
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(120)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: product_details
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sell_cost
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_id
+                    references: product (id)
+
+        - createTable:
+            tableName: relation_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_description_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_company_description_id
+                    references: company_description (id)
+              - column:
+                  name:  factory_description_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_factory_description_id
+                    references: factory_description (id)
+
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(60)
+                  constraints:
+                    nullable: false
+                    unique: true
 
   - changeSet:
-      id: add all data part2
+      id: add tables part 2
       author: sam
       changes:
-        - sqlFile:
-            dbms: mysql
-            encoding: UTF-8
-            path: db/changelog/initDB2.sql
+        - createTable:
+            tableName: user_description
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: relation_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_relation_type_id
+                    references: relation_type (id)
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_role_id
+                    references: role (id)
+
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(180)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_description_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_description_id
+                    references: user_description (id)
+
+        - createTable:
+            tableName: auth_info_entity
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: login
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: users_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fkauth_users_id
+                    references: users (id)
+
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cost
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: users_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_id
+                    references: users (id)
+
+        - createTable:
+            tableName: orders_product_details
+            columns:
+              - column:
+                  name: orders_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_orders_id
+                    references: orders (id)
+              - column:
+                  name: product_details_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_product_details_id
+                    references: product_details (id)
 
   - changeSet:
-      id: add all data part3
+      id: insert values in to tables
       author: sam
       changes:
-        - sqlFile:
-            dbms: mysql
-            encoding: UTF-8
-            path: db/changelog/initDB3.sql
+      - insert:
+          tableName: role
+          columns:
+            - column:
+                name: id
+                value: 1
+            - column:
+                name: name
+                value: "USER"
+
+      - insert:
+          tableName: role
+          columns:
+            - column:
+                name: id
+                value: 2
+            - column:
+                name: name
+                value: "ADMIN"
+
+      - insert:
+          tableName: factory_description
+          columns:
+            - column:
+                name: id
+                value: 1
+            - column:
+                name: phone
+                value: "+375445333880"
+            - column:
+                name: position
+                value: "manager"
+
+      - insert:
+          tableName: factory_description
+          columns:
+            - column:
+                name: id
+                value: 2
+            - column:
+                name: phone
+                value: "+375445333880"
+            - column:
+                name: position
+                value: "production manager"
+
+      - insert:
+          tableName: company_description
+          columns:
+            - column:
+                name: id
+                value: 1
+            - column:
+                name: company
+                value: "ООО\"Аливария\""
+            - column:
+                name: discount
+                value: 10
+            - column:
+                name: info
+                value: "Пивоварня №1 в СНГ"
+            - column:
+                name: phone
+                value: "+375445333880"
+
+      - insert:
+          tableName: relation_type
+          columns:
+            - column:
+                name: factory_description_id
+                value: 1
+
+      - insert:
+          tableName: relation_type
+          columns:
+            - column:
+                name: factory_description_id
+                value: 2
+
+      - insert:
+          tableName: relation_type
+          columns:
+            - column:
+                name: company_description_id
+                value: 1
+
+      - insert:
+          tableName: user_description
+          columns:
+            - column:
+                name: relation_type_id
+                value: 1
+            - column:
+                name: role_id
+                value: 2
+
+      - insert:
+          tableName: user_description
+          columns:
+            - column:
+                name: relation_type_id
+                value: 2
+            - column:
+                name: role_id
+                value: 2
+
+      - insert:
+          tableName: user_description
+          columns:
+            - column:
+                name: relation_type_id
+                value: 3
+            - column:
+                name: role_id
+                value: 1
+
+      - insert:
+          tableName: users
+          columns:
+            - column:
+                name: email
+                value: "petya@email.com"
+            - column:
+                name: full_name
+                value: "Петя Петрович Пупкин"
+            - column:
+                name: user_description_id
+                value: 1
+
+      - insert:
+          tableName: users
+          columns:
+            - column:
+                name: email
+                value: "dima@email.com"
+            - column:
+                name: full_name
+                value: "Дима Михайлович Андропов"
+            - column:
+                name: user_description_id
+                value: 2
+
+      - insert:
+          tableName: users
+          columns:
+            - column:
+                name: email
+                value: "vasya@email.com"
+            - column:
+                name: full_name
+                value: "Пупкин Василий Иванович"
+            - column:
+                name: user_description_id
+                value: 3
+
+      - insert:
+          tableName: auth_info_entity
+          columns:
+            - column:
+                name: login
+                value: "petya@email.com"
+            - column:
+                name: password
+                value: "$2y$10$hlEr2dDX5P/uB35dqySWMe2fLX5HdLTjOm4sUpkohMgEpiRLImRQS"
+            - column:
+                name: users_id
+                value: 1
+
+      - insert:
+          tableName: auth_info_entity
+          columns:
+            - column:
+                name: login
+                value: "dima@email.com"
+            - column:
+                name: password
+                value: "$2y$10$VdERCAzwLEH7Pk5VTdQiwuDeL7vl8qL8TXR6UFEihxx4baGK.BFzy"
+            - column:
+                name: users_id
+                value: 2
+
+      - insert:
+          tableName: auth_info_entity
+          columns:
+            - column:
+                name: login
+                value: "vasya@email.com"
+            - column:
+                name: password
+                value: "$2a$10$XSmc.fcrTETtBMyW6KaV4ugDeaUFXKFGtx38h36KOxtnFVtg9qMh6"
+            - column:
+                name: users_id
+                value: 3
+
+      - insert:
+          tableName: product
+          columns:
+            - column:
+                name: category
+                value: "Тара для хранения"
+            - column:
+                name: name
+                value: "Бутылка"
+            - column:
+                name: prime_cost
+                value: 60
+            - column:
+                name: type
+                value: "0.5"
+
+      - insert:
+          tableName: product
+          columns:
+            - column:
+                name: category
+                value: "Фильтрация и сорбирование"
+            - column:
+                name: name
+                value: "Воздушный фильтр"
+            - column:
+                name: prime_cost
+                value: 40
+            - column:
+                name: type
+                value: "0.1"
+
+      - insert:
+          tableName: product
+          columns:
+            - column:
+                name: category
+                value: "Устройства для розлива"
+            - column:
+                name: name
+                value: "Кран"
+            - column:
+                name: prime_cost
+                value: 12000
+            - column:
+                name: type
+                value: "45-120"

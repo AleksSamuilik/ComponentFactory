@@ -43,7 +43,7 @@ public abstract class AbstractControllerTest {
     protected String tokenDima;
     protected String orderId;
 
-//    @BeforeEach
+    @BeforeEach
     private void init() {
         tokenVasya = signInAsVasya();
         tokenPetya = signInAsPetya();
