@@ -21,7 +21,7 @@ import java.util.Optional;
 @Log
 @Data
 @RestController
-@RequestMapping(value = "/componentFactory/orders", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+@RequestMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
 public class OrderController {
 
     private final OrderService orderService;

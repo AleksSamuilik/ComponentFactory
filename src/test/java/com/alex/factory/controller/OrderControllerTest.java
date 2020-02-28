@@ -25,7 +25,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testNewOrder() {
 
-        mockMvc.perform(post("/componentFactory/orders/new").header("Authorization", tokenVasya)
+        mockMvc.perform(post("/orders/new").header("Authorization", tokenVasya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"productDetails\": [\n" +
@@ -54,7 +54,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testRegisterOrderConfirmed() {
 
-        mockMvc.perform(post("/componentFactory/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
+        mockMvc.perform(post("/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "\"isConfirmed\": \"true\"\n" +
@@ -66,7 +66,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testRegisterOrderCanceled() {
 
-        mockMvc.perform(post("/componentFactory/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
+        mockMvc.perform(post("/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "\"isConfirmed\": \"false\"\n" +
@@ -84,7 +84,7 @@ public class OrderControllerTest extends AbstractControllerTest {
         createTestOrder();
         createTestOrder();
 
-        mockMvc.perform(get("/componentFactory/orders").header("Authorization", tokenPetya))
+        mockMvc.perform(get("/orders").header("Authorization", tokenPetya))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[\n" +
                         "{\n" +
@@ -111,7 +111,7 @@ public class OrderControllerTest extends AbstractControllerTest {
 
         final String orderId = createTestOrder();
 
-        mockMvc.perform(get("/componentFactory/orders/" + orderId).header("Authorization", tokenDima))
+        mockMvc.perform(get("/orders/" + orderId).header("Authorization", tokenDima))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
                         "   \"startDate\":\"12.02.2020\",\n" +
@@ -125,7 +125,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testUpdateStatusToWorkOrder1() {
 
-        mockMvc.perform(put("/componentFactory/orders/" + orderId).header("Authorization", tokenDima)
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isOk());
@@ -135,7 +135,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testUpdateStatusToCloseOrder1() {
 
-        mockMvc.perform(put("/componentFactory/orders/" + orderId).header("Authorization", tokenDima)
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"close\" }"))
                 .andExpect(status().isOk());

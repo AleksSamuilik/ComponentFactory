@@ -32,7 +32,7 @@ public class ExceptionControllerAdvice {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler({BadCredentialsException.class})
     public ResponseEntity<ErrorMessage> handleForbidden(final Exception e) {
         log.log(Level.SEVERE, e.getMessage(), e);
         return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.FORBIDDEN);

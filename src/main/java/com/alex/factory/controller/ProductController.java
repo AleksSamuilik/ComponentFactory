@@ -14,7 +14,7 @@ import java.util.List;
 @Log
 @Data
 @RestController
-@RequestMapping(value = "/componentFactory/products")
+@RequestMapping(value = "/products")
 public class ProductController {
 
     private final ProductService productService;

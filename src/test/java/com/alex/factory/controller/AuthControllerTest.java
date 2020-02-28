@@ -24,7 +24,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testSignUpCompany() {
 
-        mockMvc.perform(post("/componentFactory/auth/sign-up")
+        mockMvc.perform(post("/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"company\" : \" ООО\\\"Аливария\\\"\",\n" +
@@ -41,7 +41,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testSignUpCompanyWhenUserAlreadyExisted() {
 
-        mockMvc.perform(post("/componentFactory/auth/sign-up")
+        mockMvc.perform(post("/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"company\" : \" ООО\\\"Аливария\\\"\",\n" +
@@ -57,7 +57,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testSignInCompany() {
-        mockMvc.perform(post("/componentFactory/auth/sign-in")
+        mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"vasya@email.com\",\n" +
@@ -70,7 +70,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testSignInCompanyWrongPassword() {
-        mockMvc.perform(post("/componentFactory/auth/sign-in")
+        mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"vasya@email.com\",\n" +
@@ -82,7 +82,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testSignInCompanyWrongEmail() {
-        mockMvc.perform(post("/componentFactory/auth/sign-in")
+        mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"Notvasya@email.com\",\n" +
@@ -95,7 +95,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testSignInFactoryFirst() {
-        mockMvc.perform(post("/componentFactory/auth/sign-in")
+        mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"petya@email.com\",\n" +
@@ -108,7 +108,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testSignInFactorySecond() {
-        mockMvc.perform(post("/componentFactory/auth/sign-in")
+        mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"dima@email.com\",\n" +

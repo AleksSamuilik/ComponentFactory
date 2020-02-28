@@ -65,7 +65,7 @@ public abstract class AbstractControllerTest {
 
     @SneakyThrows
     protected String signInAsAccount(final String email, final String password, final int lengthToken) {
-        final String response = mockMvc.perform(post("/componentFactory/auth/sign-in")
+        final String response = mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"" + email + "\",\n" +
@@ -80,7 +80,7 @@ public abstract class AbstractControllerTest {
 
     @SneakyThrows
     protected String createTestOrder() {
-        final String response = mockMvc.perform(post("/componentFactory/orders/new").header("Authorization", tokenVasya)
+        final String response = mockMvc.perform(post("/orders/new").header("Authorization", tokenVasya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"productDetails\": [\n" +

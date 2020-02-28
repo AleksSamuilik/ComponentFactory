@@ -29,7 +29,7 @@ public class ProductControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testProductList()  {
 
-        mockMvc.perform(get("/componentFactory/products").header("Authorization", tokenVasya))
+        mockMvc.perform(get("/products").header("Authorization", tokenVasya))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\n" +
                         "\"id\":1,\n" +
@@ -55,7 +55,7 @@ public class ProductControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testGetProductBottle()  {
 
-        mockMvc.perform(get("/componentFactory/products/1").header("Authorization", tokenVasya))
+        mockMvc.perform(get("/products/1").header("Authorization", tokenVasya))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
                         "\"id\":1,\n" +
@@ -70,7 +70,7 @@ public class ProductControllerTest extends AbstractControllerTest {
  @SneakyThrows
     public void testGetProductUnknown() {
 
-     mockMvc.perform(get("/componentFactory/products/999999").header("Authorization", tokenVasya))
+     mockMvc.perform(get("/products/999999").header("Authorization", tokenVasya))
              .andExpect(status().isBadRequest());
  }
 }
