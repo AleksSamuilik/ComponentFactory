@@ -1,7 +1,7 @@
 package com.alex.factory.service;
 
 import com.alex.factory.dto.ProductDTO;
-import com.alex.factory.exception.ProductNotFoundException;
+import com.alex.factory.exception.CompFactProductNotFoundException;
 import com.alex.factory.mapper.ProductMapper;
 import com.alex.factory.model.Product;
 import com.alex.factory.repository.ProductRepository;
@@ -25,11 +25,11 @@ public class ProductService {
         return productRepository.findAll().stream().map(productMapper::destinationToSource).collect(Collectors.toList());
     }
 
-    public ProductDTO getProduct(Long productId) throws ProductNotFoundException {
+    public ProductDTO getProduct(Long productId) throws CompFactProductNotFoundException {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
             return   productMapper.destinationToSource(product.get());
         }
-        throw new ProductNotFoundException("There is no such product");
+        throw new CompFactProductNotFoundException("There is no such product");
     }
 }

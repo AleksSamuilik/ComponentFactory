@@ -1,7 +1,7 @@
 package com.alex.factory.service;
 
 import com.alex.factory.dto.Company;
-import com.alex.factory.exception.SuchUserAlreadyExistException;
+import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
 import com.alex.factory.model.*;
 import com.alex.factory.repository.*;
 import com.alex.factory.security.UserRole;
@@ -12,13 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Log
 @Service
 @AllArgsConstructor
 public class CompanyService {
-
 
 
     private final AuthInfoRepository authInfoRepository;
@@ -31,10 +31,10 @@ public class CompanyService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public void signUp(final Company signUpRequest) throws SuchUserAlreadyExistException {
+    public void signUp(final Company signUpRequest) throws CompFactSuchUserAlreadyExistException {
 
         if (authInfoRepository.findByLogin(signUpRequest.getEmail()).isPresent()) {
-            throw new SuchUserAlreadyExistException("Account with email: " + signUpRequest.getEmail() + " already exists");
+            throw new CompFactSuchUserAlreadyExistException("Account with email: " + signUpRequest.getEmail() + " already exists");
         }
         save(signUpRequest);
     }
@@ -81,10 +81,11 @@ public class CompanyService {
     @Transactional
     public void delete(Long userId) {
         final Optional<AuthInfoEntity> authInfoEntity = authInfoRepository.findById(userId);
-        orderRepository.deleteAllByUser(authInfoEntity.get().getUser());
-        log.info("GOOD");
-        authInfoRepository.deleteAllByLogin(authInfoEntity.get().getLogin());
-
-
+        if (authInfoEntity.isPresent()) {
+            orderRepository.deleteAllByUser(authInfoEntity.get().getUser());
+            authInfoRepository.deleteAllByLogin(authInfoEntity.get().getLogin());
+        } else {
+            throw new NoSuchElementException("Such Authentication info doesn't exist");
+        }
     }
 }

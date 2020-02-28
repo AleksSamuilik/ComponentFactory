@@ -1,7 +1,7 @@
 package com.alex.factory.controller;
 
 import com.alex.factory.dto.ProductDTO;
-import com.alex.factory.exception.ProductNotFoundException;
+import com.alex.factory.exception.CompFactProductNotFoundException;
 import com.alex.factory.service.ProductService;
 import lombok.Data;
 import lombok.extern.java.Log;
@@ -28,7 +28,7 @@ public class ProductController {
 
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDTO getOrder(@PathVariable final Long productId, final Authentication authentication) throws ProductNotFoundException {
+    public ProductDTO getOrder(@PathVariable final Long productId, final Authentication authentication) throws CompFactProductNotFoundException {
         return productService.getProduct(productId);
     }
 

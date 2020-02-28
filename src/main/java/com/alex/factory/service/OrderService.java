@@ -1,9 +1,8 @@
 package com.alex.factory.service;
 
-import com.alex.factory.dto.NewOrder;
-import com.alex.factory.dto.OrderDTO;
-import com.alex.factory.dto.ProductDetailsDTO;
-import com.alex.factory.dto.UpdateOrderStatus;
+import com.alex.factory.dto.*;
+import com.alex.factory.exception.CompFactNoSuchElementException;
+import com.alex.factory.exception.CompFactOrderNotFoundException;
 import com.alex.factory.mapper.OrderMapper;
 import com.alex.factory.model.Order;
 import com.alex.factory.model.Product;
@@ -15,35 +14,29 @@ import com.alex.factory.repository.ProductRepository;
 import com.alex.factory.repository.UserRepository;
 import com.alex.factory.utils.InitBusinessArgs;
 import com.alex.factory.utils.ParamsBusinessLogic;
+import liquibase.pro.packaged.O;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Log
+@RequiredArgsConstructor
 @Service
 public class OrderService {
 
-    @Autowired
-    private InitBusinessArgs initBusinessArgs;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private ParamsBusinessLogic paramsBusinessLogic;
-    @Autowired
-    private ProductDetailsRepository productDetailsRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderMapper orderMapper;
+
+    private final InitBusinessArgs initBusinessArgs;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final ParamsBusinessLogic paramsBusinessLogic;
+    private final ProductDetailsRepository productDetailsRepository;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
 
     @Transactional
@@ -62,7 +55,7 @@ public class OrderService {
         return (int) Math.ceil(primeCost * (100 + paramsBusinessLogic.getSURCHARGE_DEFAULT()) / 100);
     }
 
-    private List<ProductDetails> saveProductDetails(NewOrder request) {
+    private List<ProductDetails> saveProductDetails(final NewOrder request) {
         final List<ProductDetails> productDetailsList = new ArrayList<>();
         final List<ProductDetailsDTO> requestProdDet = request.getProductDetails();
 
@@ -95,9 +88,11 @@ public class OrderService {
     }
 
 
-    public Order updateStatus(Long orderId, UpdateOrderStatus request) {
-        final Order order = orderRepository.findById(orderId).get();
-        order.setStatus(request.getStatus());
+    public Order updateOrder(final Long orderId,final UpdateOrderDTO request) throws CompFactNoSuchElementException {
+        final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactNoSuchElementException("Such order doesn't exist"));
+        if (request.getStatus() != null) {
+            order.setStatus(request.getStatus());
+        }
         return orderRepository.save(order);
     }
 
@@ -107,19 +102,33 @@ public class OrderService {
 
 
     @Transactional
-    public void changeStatus(Long id, boolean isConfirmed) {
-        final Order order = orderRepository.findById(id).get();
+    public void changeStatus(final Order order) {
         order.setStatus("confirmed");
         orderRepository.save(order);
     }
 
-    public OrderDTO getOrder(final Long id) {
-        Optional<Order> order = orderRepository.findById(id);
-        return orderMapper.destinationToSource(order.get());
+    public OrderDTO getOrder(final Long id) throws CompFactOrderNotFoundException {
+        final Order order = orderRepository.findById(id).orElseThrow(() -> new CompFactOrderNotFoundException("Order not found"));
+        return orderMapper.destinationToSource(order);
     }
 
     @Transactional
-    public void deleteOrder(Long orderId) {
-        orderRepository.deleteById(orderId);
+    public void deleteOrder(final Order order) {
+        orderRepository.deleteById(order.getId());
+    }
+
+    public void register(final Long orderId,final Submit isConfirmed) throws CompFactOrderNotFoundException {
+        final Order order = orderRepository.findById(orderId).orElseThrow(() ->  new  CompFactOrderNotFoundException("Order not found")) ;
+            boolean isConfirm = Boolean.parseBoolean(isConfirmed.getIsConfirmed());
+            if (isConfirm) {
+                changeStatus(order);
+            } else {
+                deleteOrder(order);
+            }
+    }
+
+    public void checkDeleteOrder(final Long orderId) throws CompFactOrderNotFoundException {
+        final Order order = orderRepository.findById(orderId).orElseThrow(() ->  new  CompFactOrderNotFoundException("Order not found")) ;
+        deleteOrder(order);
     }
 }

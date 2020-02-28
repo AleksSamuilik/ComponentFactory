@@ -1,8 +1,8 @@
 package com.alex.factory.controller;
 
-import com.alex.factory.exception.OrderNotFoundException;
-import com.alex.factory.exception.ProductNotFoundException;
-import com.alex.factory.exception.SuchUserAlreadyExistException;
+import com.alex.factory.exception.CompFactOrderNotFoundException;
+import com.alex.factory.exception.CompFactProductNotFoundException;
+import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
 import lombok.Data;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 
 @ControllerAdvice
@@ -19,8 +20,8 @@ import java.util.logging.Level;
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(
-            {OrderNotFoundException.class, ProductNotFoundException.class, SuchUserAlreadyExistException.class,
-                    UsernameNotFoundException.class})
+            {CompFactOrderNotFoundException.class, CompFactProductNotFoundException.class, CompFactSuchUserAlreadyExistException.class,
+                    UsernameNotFoundException.class, NoSuchElementException.class})
     private ResponseEntity<ErrorMessage> handleBadRequest(final Exception e) {
         log.log(Level.SEVERE, e.getMessage(), e);
         return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);

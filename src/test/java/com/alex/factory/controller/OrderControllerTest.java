@@ -133,6 +133,18 @@ public class OrderControllerTest extends AbstractControllerTest {
 
     @Test
     @SneakyThrows
+    public void testUpdateTimeAndCostOrder1() {
+
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{   \"endDate\":\"15.03.2020\",\n" +
+                        "   \"cost\":900000\n" +
+                        "}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
     public void testUpdateStatusToCloseOrder1() {
 
         mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)

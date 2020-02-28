@@ -3,14 +3,13 @@ package com.alex.factory.controller;
 import com.alex.factory.dto.Company;
 import com.alex.factory.dto.LoginForm;
 import com.alex.factory.dto.SignInResponse;
-import com.alex.factory.exception.SuchUserAlreadyExistException;
+import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
 import com.alex.factory.service.AuthService;
 import com.alex.factory.service.CompanyService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "User already exist")
     })
     public void singUp(@ApiParam(value = "User signUp data", required = true)
-                       @Valid @RequestBody final Company signUpRequest) throws SuchUserAlreadyExistException {
+                       @Valid @RequestBody final Company signUpRequest) throws CompFactSuchUserAlreadyExistException {
         companyService.signUp(signUpRequest);
     }
 
@@ -49,6 +48,12 @@ public class AuthController {
     @DeleteMapping(value = "/{authInfoId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Delete auth data user", notes = "Use this method to delete authentication data user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully delete auth info"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     public void deleteUser(@PathVariable final Long authInfoId) {
         companyService.delete(authInfoId);
     }
