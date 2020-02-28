@@ -47,7 +47,7 @@ public class OrderController {
     })
     @PostMapping(value = "/{orderId}/submit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void register(@RequestBody Submit isConfirmed, @PathVariable final Long orderId, final Authentication authentication) throws CompFactOrderNotFoundException {
+    public void register(@Valid @RequestBody Submit isConfirmed, @PathVariable final Long orderId) throws CompFactOrderNotFoundException {
         orderService.register(orderId, isConfirmed);
     }
 
@@ -74,7 +74,7 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public void updateOrder(@RequestBody UpdateOrderDTO request, @PathVariable final Long orderId) throws CompFactNoSuchElementException {
+    public void updateOrder(@Valid @RequestBody UpdateOrderDTO request, @PathVariable final Long orderId) throws CompFactNoSuchElementException {
         orderService.updateOrder(orderId, request);
     }
 
@@ -103,6 +103,4 @@ public class OrderController {
     public void deleteOrder(@PathVariable final Long orderId) throws CompFactOrderNotFoundException {
         orderService.checkDeleteOrder(orderId);
     }
-
-
 }
