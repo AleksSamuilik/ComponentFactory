@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
@@ -41,6 +43,8 @@ public abstract class AbstractControllerTest {
     protected UserRepository userRepository;
 
     protected static final String TOKEN = "token";
+    protected static final String EMAIL_USER = "vasya@email.com";
+    protected static final String EMAIL_ADMIN = "petya@email.com";
 
     protected String tokenVasya;
     protected String tokenPetya;
@@ -48,25 +52,18 @@ public abstract class AbstractControllerTest {
     protected String orderId;
     protected String orderIdNext;
 
-//    @BeforeEach
-//    private void init() {
-//        tokenVasya = signInAsRoleUser();
-//        tokenPetya = signInAsRoleAdmin();
-//        orderId = createTestOrder();
-//        orderIdNext = String.valueOf(Long.valueOf(orderId) + 1l);
-//    }
 
     protected String signInAsRoleUser() {
-        return signInAsAccount("vasya@email.com", "qwerty", 144);
+        return signInAsAccount("vasya@email.com");
     }
 
     protected String signInAsRoleAdmin() {
-        return signInAsAccount("petya@email.com", "123qweasdzxc", 144);
+        return signInAsAccount("petya@email.com");
     }
 
 
     @SneakyThrows
-    protected String signInAsAccount(final String email, final String password, final int lengthToken) {
+    protected String signInAsAccount(final String email) {
         //when
         final AuthInfoEntity authInfoEntity = getAuthInfo(email);
         given(authInfoRepository.findByLogin(email)).willReturn(Optional.of(authInfoEntity));
@@ -107,31 +104,32 @@ public abstract class AbstractControllerTest {
         return String.valueOf(objectMapper.readValue(response, BriefDescriptOrder.class).getId());
     }
 
-    protected AuthInfoEntity getAuthInfo(String email) {
+    protected AuthInfoEntity getAuthInfo(final String email) {
+
+       final Map<String, AuthInfoEntity> authInfoEntityMap = getAuthMap();
+
+        return authInfoEntityMap.get(email);
+    }
+
+    private Map<String, AuthInfoEntity> getAuthMap() {
+       final Map<String, AuthInfoEntity> authMap = new HashMap<>();
+        authMap.put(EMAIL_ADMIN, getAuth(EMAIL_ADMIN, UserRole.ADMIN, "$2y$10$hlEr2dDX5P/uB35dqySWMe2fLX5HdLTjOm4sUpkohMgEpiRLImRQS"));
+        authMap.put(EMAIL_USER, getAuth(EMAIL_USER, UserRole.ADMIN, "$2a$10$XSmc.fcrTETtBMyW6KaV4ugDeaUFXKFGtx38h36KOxtnFVtg9qMh6"));
+return authMap;
+    }
+
+    private AuthInfoEntity getAuth(final String email,final UserRole userRole,final String password) {
         final AuthInfoEntity authInfoEntity = new AuthInfoEntity();
         final User user = new User();
         final UserDescription userDescription = new UserDescription();
         final Role role = new Role();
-
-        if (email.equals("petya@email.com")) {
-            authInfoEntity.setLogin(email);
-            authInfoEntity.setPassword("$2y$10$hlEr2dDX5P/uB35dqySWMe2fLX5HdLTjOm4sUpkohMgEpiRLImRQS");
-            role.setName(UserRole.ADMIN);
-            userDescription.setRole(role);
-            user.setEmail(email);
-            user.setUsersDescription(userDescription);
-            authInfoEntity.setUser(user);
-        } else {
-
-            authInfoEntity.setLogin(email);
-            authInfoEntity.setPassword("$2a$10$XSmc.fcrTETtBMyW6KaV4ugDeaUFXKFGtx38h36KOxtnFVtg9qMh6");
-            role.setName(UserRole.USER);
-            userDescription.setRole(role);
-            user.setEmail(email);
-            user.setUsersDescription(userDescription);
-            authInfoEntity.setUser(user);
-        }
+        authInfoEntity.setLogin(email);
+        authInfoEntity.setPassword(password);
+        role.setName(userRole);
+        userDescription.setRole(role);
+        user.setEmail(email);
+        user.setUsersDescription(userDescription);
+        authInfoEntity.setUser(user);
         return authInfoEntity;
     }
-
 }
