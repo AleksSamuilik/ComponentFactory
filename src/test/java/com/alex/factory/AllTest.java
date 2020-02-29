@@ -167,7 +167,7 @@ public class AllTest {
                         "  \"email\" : \"vasya@email.com\",\n" +
                         " \"password\" : \"Errorqwerty\"\n" +
                         "}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class AllTest {
                         "  \"email\" : \"Notvasya@email.com\",\n" +
                         " \"password\" : \"qwerty\"\n" +
                         "}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
 

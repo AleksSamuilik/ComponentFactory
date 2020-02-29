@@ -3,6 +3,7 @@ package com.alex.factory.controller;
 import com.alex.factory.exception.CompFactOrderNotFoundException;
 import com.alex.factory.exception.CompFactProductNotFoundException;
 import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
+import com.alex.factory.exception.CompFactWrongPasswordException;
 import lombok.Data;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(
             {CompFactOrderNotFoundException.class, CompFactProductNotFoundException.class, CompFactSuchUserAlreadyExistException.class,
-                    UsernameNotFoundException.class, NoSuchElementException.class})
+                    UsernameNotFoundException.class, NoSuchElementException.class, CompFactWrongPasswordException.class})
     private ResponseEntity<ErrorMessage> handleBadRequest(final Exception e) {
         log.log(Level.SEVERE, e.getMessage(), e);
         return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);

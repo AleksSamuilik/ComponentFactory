@@ -81,7 +81,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @SneakyThrows
     public void testOrderList() {
 
-        deleteAllOrder();
+//        deleteAllOrder();
         final String firstId = createTestOrder();
         final String secondId = createTestOrder();
         final String thirdId = createTestOrder();

@@ -4,6 +4,7 @@ import com.alex.factory.dto.Company;
 import com.alex.factory.dto.LoginForm;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
+import com.alex.factory.exception.CompFactWrongPasswordException;
 import com.alex.factory.service.AuthService;
 import com.alex.factory.service.CompanyService;
 import io.swagger.annotations.*;
@@ -41,7 +42,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "SignIn", notes = "Use this method to signIn, if user doesn't exist")
     public SignInResponse singIn(@ApiParam(value = "User signIn data", required = true)
-                                 @Valid @RequestBody final LoginForm loginFormRequest) throws UsernameNotFoundException {
+                                 @Valid @RequestBody final LoginForm loginFormRequest) throws UsernameNotFoundException, CompFactWrongPasswordException {
         return authService.signIn(loginFormRequest);
     }
 }
