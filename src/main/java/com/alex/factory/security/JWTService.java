@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtUtil {
+public class JWTService {
     @Value("${sam.app.prop.jwtSecret}")
     private String SECRET_KEY;
     @Value("${sam.app.prop.jwtExpiration}")

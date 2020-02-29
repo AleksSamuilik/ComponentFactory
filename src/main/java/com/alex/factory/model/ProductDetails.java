@@ -18,10 +18,5 @@ public class ProductDetails {
     private int quantity;
     @NotNull
     private int sellCost;
-//
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "orders_id", nullable = false)
-//    private Order order;
-
 
 }

@@ -1,7 +1,7 @@
 package com.alex.factory.repository;
 
 import com.alex.factory.model.Role;
-import com.alex.factory.security.UserRole;
+import com.alex.factory.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

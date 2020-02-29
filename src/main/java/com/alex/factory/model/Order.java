@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-
 @Entity(name = "orders")
 public class Order {
 
@@ -28,10 +27,8 @@ public class Order {
     private String status;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "orders_productDetails",
-//    @OneToMany( mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    joinColumns=@JoinColumn(name = "orders_id"),
-    inverseJoinColumns = @JoinColumn(name = "productDetails_id"))
+            joinColumns = @JoinColumn(name = "orders_id"),
+            inverseJoinColumns = @JoinColumn(name = "productDetails_id"))
 
     private List<ProductDetails> productDetails;
-
 }

@@ -1,5 +1,6 @@
 package com.alex.factory.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ public class UserDescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
     @OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)

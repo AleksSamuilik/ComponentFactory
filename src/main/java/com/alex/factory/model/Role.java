@@ -1,6 +1,5 @@
 package com.alex.factory.model;
 
-import com.alex.factory.security.UserRole;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 

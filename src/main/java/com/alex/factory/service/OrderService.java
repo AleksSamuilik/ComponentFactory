@@ -1,9 +1,9 @@
 package com.alex.factory.service;
 
+import com.alex.factory.mapper.OrderMapper;
 import com.alex.factory.dto.*;
 import com.alex.factory.exception.CompFactNoSuchElementException;
 import com.alex.factory.exception.CompFactOrderNotFoundException;
-import com.alex.factory.mapper.OrderMapper;
 import com.alex.factory.model.Order;
 import com.alex.factory.model.Product;
 import com.alex.factory.model.ProductDetails;
@@ -14,17 +14,17 @@ import com.alex.factory.repository.ProductRepository;
 import com.alex.factory.repository.UserRepository;
 import com.alex.factory.utils.InitBusinessArgs;
 import com.alex.factory.utils.ParamsBusinessLogic;
-import liquibase.pro.packaged.O;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Log
 @RequiredArgsConstructor
 @Service
 public class OrderService {
@@ -39,13 +39,15 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
 
+
     @Transactional
-    public OrderDTO newOrder(final NewOrder request, final String email) {
+    public BriefDescriptOrder newOrder(final NewOrderRequest request, final String email) {
         final User user = userRepository.findByEmail(email).get();
-        return orderMapper.destinationToSource(save(request, user));
+        return orderMapper.destinationToSourceBriefDescriptOrder(save(request, user));
     }
 
-    private Order save(final NewOrder request, final User user) {
+
+    private Order save(final NewOrderRequest request, final User user) {
         final List<ProductDetails> productDetailsList = saveProductDetails(request);
         final Order order = saveOrder(request, user, productDetailsList);
         return order;
@@ -55,7 +57,7 @@ public class OrderService {
         return (int) Math.ceil(primeCost * (100 + paramsBusinessLogic.getSURCHARGE_DEFAULT()) / 100);
     }
 
-    private List<ProductDetails> saveProductDetails(final NewOrder request) {
+    private List<ProductDetails> saveProductDetails(final NewOrderRequest request) {
         final List<ProductDetails> productDetailsList = new ArrayList<>();
         final List<ProductDetailsDTO> requestProdDet = request.getProductDetails();
 
@@ -72,7 +74,7 @@ public class OrderService {
         return productDetailsList;
     }
 
-    private Order saveOrder(final NewOrder request, final User user, final List<ProductDetails> productDetailsList) {
+    private Order saveOrder(final NewOrderRequest request, final User user, final List<ProductDetails> productDetailsList) {
         final Order order = new Order();
         order.setUser(user);
         order.setStartDate(request.getStartDate());
@@ -88,7 +90,7 @@ public class OrderService {
     }
 
 
-    public Order updateOrder(final Long orderId,final UpdateOrderDTO request) throws CompFactNoSuchElementException {
+    public Order updateOrder(final Long orderId, final UpdateOrderDTO request) throws CompFactNoSuchElementException {
         final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactNoSuchElementException("Such order doesn't exist"));
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
@@ -96,8 +98,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<OrderDTO> getAllOrder() {
-        return orderRepository.findAll().stream().map(orderMapper::destinationToSource).collect(Collectors.toList());
+    public List<BriefDescriptOrder> getAllOrder() {
+        return orderRepository.findAll().stream().map(orderMapper::destinationToSourceBriefDescriptOrder).collect(Collectors.toList());
     }
 
 
@@ -117,18 +119,18 @@ public class OrderService {
         orderRepository.deleteById(order.getId());
     }
 
-    public void register(final Long orderId,final Submit isConfirmed) throws CompFactOrderNotFoundException {
-        final Order order = orderRepository.findById(orderId).orElseThrow(() ->  new  CompFactOrderNotFoundException("Order not found")) ;
-            boolean isConfirm = Boolean.parseBoolean(isConfirmed.getIsConfirmed());
-            if (isConfirm) {
-                changeStatus(order);
-            } else {
-                deleteOrder(order);
-            }
+    public void register(final Long orderId, final Submit isConfirmed) throws CompFactOrderNotFoundException {
+        final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactOrderNotFoundException("Order not found"));
+        boolean isConfirm = Boolean.parseBoolean(isConfirmed.getIsConfirmed());
+        if (isConfirm) {
+            changeStatus(order);
+        } else {
+            deleteOrder(order);
+        }
     }
 
     public void checkDeleteOrder(final Long orderId) throws CompFactOrderNotFoundException {
-        final Order order = orderRepository.findById(orderId).orElseThrow(() ->  new  CompFactOrderNotFoundException("Order not found")) ;
+        final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactOrderNotFoundException("Order not found"));
         deleteOrder(order);
     }
 }

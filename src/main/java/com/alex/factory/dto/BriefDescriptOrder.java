@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
-public class NewOrder {
+public class BriefDescriptOrder {
+    private Long id;
 
-    private List<ProductDetailsDTO> productDetails;
     @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate startDate;
+
     @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate endDate;
 
+    private Long cost;
+
+    private String status;
 }

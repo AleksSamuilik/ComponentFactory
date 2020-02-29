@@ -1,4 +1,4 @@
-package com.alex.factory.security;
+package com.alex.factory.model;
 
 public enum UserRole {
     USER, ADMIN

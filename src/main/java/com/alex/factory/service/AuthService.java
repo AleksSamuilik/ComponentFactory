@@ -2,7 +2,7 @@ package com.alex.factory.service;
 
 import com.alex.factory.dto.LoginForm;
 import com.alex.factory.dto.SignInResponse;
-import com.alex.factory.security.JwtUtil;
+import com.alex.factory.security.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final JwtUtil jwtUtil;
+    private final JWTService JWTService;
     private final AuthenticationManager authenticationManager;
 
 
@@ -24,7 +24,7 @@ public class AuthService {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
-        SignInResponse signInResponse = new SignInResponse(jwtUtil.generateToken(
+        SignInResponse signInResponse = new SignInResponse(JWTService.generateToken(
                 new User(signInRequest.getEmail(), signInRequest.getPassword(), authentication.getAuthorities())));
 
         return signInResponse;

@@ -4,7 +4,7 @@ import com.alex.factory.dto.Company;
 import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
 import com.alex.factory.model.*;
 import com.alex.factory.repository.*;
-import com.alex.factory.security.UserRole;
+import com.alex.factory.model.UserRole;
 import com.alex.factory.utils.ParamsBusinessLogic;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;

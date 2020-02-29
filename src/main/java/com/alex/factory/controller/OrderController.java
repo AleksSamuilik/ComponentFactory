@@ -1,14 +1,12 @@
 package com.alex.factory.controller;
 
-import com.alex.factory.dto.NewOrder;
-import com.alex.factory.dto.OrderDTO;
-import com.alex.factory.dto.Submit;
-import com.alex.factory.dto.UpdateOrderDTO;
+import com.alex.factory.dto.*;
 import com.alex.factory.exception.CompFactNoSuchElementException;
 import com.alex.factory.exception.CompFactOrderNotFoundException;
 import com.alex.factory.service.OrderService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -19,6 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Log
 @RequestMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
 @Api(value = "Orders service")
 public class OrderController {
@@ -34,8 +33,8 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public OrderDTO createNewOrder(@ApiParam(value = "New order data") @Valid @RequestBody final NewOrder newOrder, final Authentication authentication) {
-        return orderService.newOrder(newOrder, authentication.getName());
+    public BriefDescriptOrder createNewOrder(@ApiParam(value = "New order data") @Valid @RequestBody final NewOrderRequest newOrderRequest, final Authentication authentication) {
+        return orderService.newOrder(newOrderRequest, authentication.getName());
     }
 
     @ApiOperation(value = "Confirm order status", notes = "Use this method, if you want to confirm order, or canceled")
@@ -87,7 +86,7 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public List<OrderDTO> getAllOrder() {
+    public List<BriefDescriptOrder> getAllOrder() {
         return orderService.getAllOrder();
     }
 

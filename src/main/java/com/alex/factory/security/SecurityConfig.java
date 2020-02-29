@@ -1,5 +1,6 @@
 package com.alex.factory.security;
 
+import com.alex.factory.model.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -26,18 +27,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.httpBasic()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/componentFactory/auth/sign-in", "/componentFactory/auth/sign-up").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/componentFactory/auth/{userId}").permitAll()
-//                .antMatchers(HttpMethod.GET, "/componentFactory/products").permitAll()
-//                .antMatchers(HttpMethod.POST, "/componentFactory/products").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/componentFactory/products").permitAll()
-//                .antMatchers(HttpMethod.POST, "/componentFactory/orders/{orderId}/submit").permitAll()
-//                .antMatchers(HttpMethod.GET, "/componentFactory/orders/{orderId}/send").permitAll()
-//                .antMatchers(HttpMethod.GET, "/componentFactory/orders/{orderId}").permitAll()
-                .antMatchers(HttpMethod.PUT, "/componentFactory/orders/{orderId}").hasRole(UserRole.ADMIN.name())
-//                .antMatchers(HttpMethod.POST, "/componentFactory/orders/new").permitAll()
-//                .antMatchers(HttpMethod.GET, "/componentFactory/orders").permitAll()
-//                .antMatchers(HttpMethod.PUT, "/componentFactory/orders/**").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/orders").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.GET, "/orders/*").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
+                .antMatchers(HttpMethod.PUT, "/orders/*").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/orders/**").hasRole(UserRole.USER.name())
+
+                .antMatchers(HttpMethod.GET, "/products").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
+                .antMatchers(HttpMethod.GET, "/products/*").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
+
+
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

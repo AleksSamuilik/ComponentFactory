@@ -1,5 +1,6 @@
 package com.alex.factory.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class RelationType {
     @JoinColumn(name = "companyDescription_id")
     private CompanyDescription companyDescription;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JoinColumn(name = "factoryDescription_id")
     private FactoryDescription factoryDescription;
 }

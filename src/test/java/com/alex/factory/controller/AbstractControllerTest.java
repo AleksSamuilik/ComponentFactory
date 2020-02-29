@@ -1,14 +1,12 @@
 package com.alex.factory.controller;
 
-import com.alex.factory.dto.OrderDTO;
+import com.alex.factory.dto.BriefDescriptOrder;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.repository.OrderRepository;
-import com.alex.factory.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,12 +18,12 @@ import javax.transaction.Transactional;
 
 import static org.hamcrest.Matchers.hasLength;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
-@Log
 public abstract class AbstractControllerTest {
 
     @Autowired
@@ -42,6 +40,7 @@ public abstract class AbstractControllerTest {
     protected String tokenPetya;
     protected String tokenDima;
     protected String orderId;
+    protected String orderIdNext;
 
     @BeforeEach
     private void init() {
@@ -49,6 +48,7 @@ public abstract class AbstractControllerTest {
         tokenPetya = signInAsPetya();
         tokenDima = signInAsDima();
         orderId = createTestOrder();
+        orderIdNext = String.valueOf(Long.valueOf(orderId) + 1l);
     }
 
     private String signInAsVasya() {
@@ -71,7 +71,6 @@ public abstract class AbstractControllerTest {
                         "  \"email\" : \"" + email + "\",\n" +
                         " \"password\" : \"" + password + "\"\n" +
                         "}"))
-                // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("token", hasLength(lengthToken)))
                 .andReturn().getResponse().getContentAsString();
@@ -97,14 +96,8 @@ public abstract class AbstractControllerTest {
                         "    \"endDate\": \"16.03.2020\"\n" +
                         "}"))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("{\n" +
-                        " \"cost\": 756201,\n" +
-                        "    \"startDate\": \"12.02.2020\",\n" +
-                        "    \"endDate\": \"12.03.2020\",\n" +
-                        "    \"status\": \"waits confirmation\"\n" +
-                        "}"))
                 .andReturn().getResponse().getContentAsString();
-        return String.valueOf(objectMapper.readValue(response, OrderDTO.class).getId());
+        return String.valueOf(objectMapper.readValue(response, BriefDescriptOrder.class).getId());
     }
 
     @Transactional

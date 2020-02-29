@@ -1,8 +1,8 @@
 package com.alex.factory.service;
 
+import com.alex.factory.mapper.ProductMapper;
 import com.alex.factory.dto.ProductDTO;
 import com.alex.factory.exception.CompFactProductNotFoundException;
-import com.alex.factory.mapper.ProductMapper;
 import com.alex.factory.model.Product;
 import com.alex.factory.repository.ProductRepository;
 import lombok.extern.java.Log;
@@ -28,7 +28,7 @@ public class ProductService {
     public ProductDTO getProduct(Long productId) throws CompFactProductNotFoundException {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
-            return   productMapper.destinationToSource(product.get());
+            return productMapper.destinationToSource(product.get());
         }
         throw new CompFactProductNotFoundException("There is no such product");
     }

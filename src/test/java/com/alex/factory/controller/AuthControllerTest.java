@@ -94,7 +94,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Test
     @SneakyThrows
-    public void testSignInFactoryFirst() {
+    public void testSignInFactory() {
         mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -103,18 +103,5 @@ public class AuthControllerTest extends AbstractControllerTest {
                         "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(TOKEN, hasLength(144)));
-    }
-
-    @Test
-    @SneakyThrows
-    public void testSignInFactorySecond() {
-        mockMvc.perform(post("/auth/sign-in")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"email\" : \"dima@email.com\",\n" +
-                        " \"password\" : \"cxzdsaewq321\"\n" +
-                        "}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(TOKEN, hasLength(143)));
     }
 }
