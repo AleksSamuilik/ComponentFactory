@@ -29,12 +29,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
 
-                .antMatchers(HttpMethod.POST, "/auth/add_admin","/products").hasRole(UserRole.ADMIN.name())
-                .antMatchers(HttpMethod.PUT, "/orders/*","products/*").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/auth/add_admin", "/products", "/orders").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/orders/*", "products/*").hasRole(UserRole.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/company/*", "/orders/*").hasRole(UserRole.ADMIN.name())
                 .antMatchers(HttpMethod.GET, "/orders", "/company/*", "/factory/*").hasRole(UserRole.ADMIN.name())
 
-                .antMatchers(HttpMethod.POST, "/orders").hasRole(UserRole.ADMIN.name())
                 .antMatchers(HttpMethod.POST, "/orders/**").hasRole(UserRole.USER.name())
 
                 .antMatchers(HttpMethod.GET, "/products/*", "/orders/*", "/products").authenticated()

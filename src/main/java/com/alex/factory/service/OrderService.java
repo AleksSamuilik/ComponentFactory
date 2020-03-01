@@ -158,9 +158,6 @@ public class OrderService {
                 }
             }
         }
-        log.info(operationOrderResponse.toString());
-
-
         return operationOrderResponse;
     }
 }

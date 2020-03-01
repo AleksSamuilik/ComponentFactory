@@ -384,7 +384,7 @@ public class DemoTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"status\": \"close\",\n" +
-                        "    \"cost\": \"800000\"\n" +
+                        "    \"cost\": 800000\n" +
                         "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
@@ -437,7 +437,7 @@ public class DemoTest {
     mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "    \"cost\": \"800000\"\n" +
+                        "    \"cost\":1000000\n" +
                         "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(""));

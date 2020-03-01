@@ -518,3 +518,112 @@ Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6I
 Response:
 
 200 OK
+
+
+### CF-18 Как "Завод" я хочу найти "Заказы" по статусу и цене, в результате получаю список заказов
+
+Request:
+
+`POST /componentFactory/orders`
+
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
+
+```json
+{
+   "status":"close",
+   "cost": 800000
+}
+```
+
+Response:
+
+200 OK
+
+```json
+{
+      "listOrdersStatusAndCost":[
+         {
+            "id":11,
+            "startDate":"12.02.2020",
+            "endDate":"12.03.2020",
+            "cost":945201,
+            "status":"close"
+         }
+      ]
+}
+```
+
+
+### CF-19 Как "Завод" я хочу найти "Заказы" по статусу, в результате получаю список заказов
+
+Request:
+
+`POST /componentFactory/orders`
+
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
+
+```json
+{
+   "status":"close"
+}
+```
+
+Response:
+
+200 OK
+
+```json
+{
+   "listOrderStatus":[
+      {
+         "id":11,
+         "startDate":"12.02.2020",
+         "endDate":"12.03.2020",
+         "cost":945201,
+         "status":"close"
+      },
+      {
+         "id":12,
+         "startDate":"12.02.2020",
+         "endDate":"12.03.2020",
+         "cost":945201,
+         "status":"close"
+      }
+   ]
+}
+```
+
+
+### CF-20 Как "Завод" я хочу найти "Заказы" по  цене, в результате получаю список заказов
+
+Request:
+
+`POST /componentFactory/orders`
+
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
+
+```json
+{
+   "cost": 1000000
+}
+```
+
+Response:
+
+200 OK
+
+```json
+{
+      "listOrdersStatusAndCost":[
+         {
+            "id":11,
+            "startDate":"12.02.2020",
+            "endDate":"12.03.2020",
+            "cost":945201,
+            "status":"close"
+         }
+      ]
+}
+```
+
+
