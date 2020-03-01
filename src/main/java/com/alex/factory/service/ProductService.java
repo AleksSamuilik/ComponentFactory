@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Log
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;

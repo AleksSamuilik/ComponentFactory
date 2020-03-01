@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@Log
 @Service
 @AllArgsConstructor
 public class CompanyService {

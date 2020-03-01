@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
-@Log
 @RequiredArgsConstructor
 public class LoadUserDetailsService implements UserDetailsService {
 

@@ -18,17 +18,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 public class AuthControllerTest extends AbstractControllerTest {
-
 
     @Test
     @SneakyThrows
     public void testSignUpCompany() {
         // given
-        final AuthInfoEntity authInfoEntity = getAuthInfo("vasya@email.com");
+        final AuthInfoEntity authInfoEntity = getAuthInfo(EMAIL_USER);
         given(authInfoRepository.findByLogin(anyString())).willReturn(Optional.empty(), Optional.of(authInfoEntity));
-
         // when
         mockMvc.perform(post("/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -42,14 +39,10 @@ public class AuthControllerTest extends AbstractControllerTest {
                         "}"))
                 //then
                 .andExpect(status().isCreated());
-
         verify(authInfoRepository, times(1)).findByLogin(anyString());
         verify(authInfoRepository, times(1)).save(any(AuthInfoEntity.class));
         verify(userRepository, times(1)).save(any(User.class));
-
     }
-
-
 
     @Test
     @SneakyThrows
@@ -72,14 +65,11 @@ public class AuthControllerTest extends AbstractControllerTest {
         verify(authInfoRepository, times(2)).findByLogin(anyString());
     }
 
-
-
-
     @Test
     @SneakyThrows
     public void testSignInCompanyWrongPassword() {
         //given
-        final AuthInfoEntity authInfoEntity = getAuthInfo("vasya@email.com");
+        final AuthInfoEntity authInfoEntity = getAuthInfo(EMAIL_USER);
         given(authInfoRepository.findByLogin(anyString())).willReturn(Optional.of(authInfoEntity));
         //when
         mockMvc.perform(post("/auth/sign-in")
@@ -92,7 +82,6 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .andExpect(status().isBadRequest());
         verify(authInfoRepository, times(1)).findByLogin(anyString());
     }
-
 
     @Test
     @SneakyThrows
@@ -111,12 +100,11 @@ public class AuthControllerTest extends AbstractControllerTest {
         verify(authInfoRepository, times(1)).findByLogin(anyString());
     }
 
-
     @Test
     @SneakyThrows
     public void testSignInFactory() {
         //given
-        final AuthInfoEntity authInfoEntity = getAuthInfo("petya@email.com");
+        final AuthInfoEntity authInfoEntity = getAuthInfo(EMAIL_ADMIN);
         given(authInfoRepository.findByLogin(anyString())).willReturn(Optional.of(authInfoEntity));
         //when
         mockMvc.perform(post("/auth/sign-in")

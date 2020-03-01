@@ -17,7 +17,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@Log
 @RequestMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
 @Api(value = "Orders service")
 public class OrderController {

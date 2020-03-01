@@ -77,7 +77,7 @@ Request:
 `POST /componentFactory/sign-up`
 ```json
 {
-   "company" : "ООО"Аливария"",
+   "company" : "ООО\"Аливария\"",
   "email" : "vasya@email.com",
   "password" : "qwerty",
   "fullName" : "Пупкин Василий Иванович",
@@ -363,54 +363,73 @@ Response:
 `200 OK`
 
 
-### B-22 Как "Администратор"  я хочу добавить еще продукты  в заказ
 
-Request: 
-
-`POST /bar/orders/add`
-
-```json
-{
-  "tableNumber" : 2,
-  "order" : 
-     [
-      {
-        "id" : 2,
-        "count" : 2
-      }
-    ]
-}
-```
-
-Response: `200 OK`
-
-### BS-11 Как "Клиент" я хочу просмотреть доступный ассортимент пива по крепости пива 5.7% , и в результате получаю список всего пива
+### CF-XX Как "Завод" добавляю новый товар
 
 Request:
 
-`POST /beer-shop-app/catalog/alco`
+POST /componentFactory/products
+
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 
 ```json
 {
-  "alco" : "5.7%"
+   "id":10,
+   "name":"Бутылка",
+   "type":"1.0",
+   "primeCost":80,
+   "category":"Тара для хранения"
 }
 ```
 
-RESPONSE: `200 OK`
+Response:
+
+201 CREATED
+
+### CF-XXX Как "Завод" редактирую заказ
+
+Request:
+
+PATCH /componentFactory/orders/{orderId}
+
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
+
 ```json
-[
-    {
-      "id" : 1,
-      "title" : "Goose",
-      "description" : "Strong",
-      "alco" : "5.7%",
-      "price" : 5
-    },{
-      "id" : 4,
-      "title" : "Harbin",
-      "description" : "dark unfiltered",
-      "alco" : "5.7%",
-      "price" : 11
-    }
-]
+{
+   "orderId":1,
+   "users":{
+      "company":" ООО\"Аливария\"",
+      "email":"vasya@email.com"
+   },
+   "startDate":"10.02.2020",
+   "endDate":"12.03.2020",
+   "cost":756201,
+   "status":"confirmed",
+   "productDetails":[
+      {
+         "product":{
+            "id":10,
+            "name":"Бутылка",
+            "primeCost":60,
+            "type":"1.0",
+            "category":"Тара для хранения"
+         },
+         "quantity":10000
+      },
+      {
+         "product":{
+            "id":2,
+            "name":"Воздушный фильтр",
+            "primeCost":40,
+            "type":"0.1",
+            "category":"Фильтрация и сорбирование"
+         },
+         "quantity":4
+      }
+   ]
+}
 ```
+
+Response:
+
+200 OK

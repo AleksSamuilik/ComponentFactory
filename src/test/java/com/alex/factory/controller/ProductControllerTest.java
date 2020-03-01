@@ -1,35 +1,32 @@
 package com.alex.factory.controller;
 
-import com.alex.factory.repository.ProductRepository;
-import com.alex.factory.repository.UserRepository;
+import com.alex.factory.model.Product;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource("classpath:application-test.properties")
-@AutoConfigureMockMvc
-@Log
+
 public class ProductControllerTest extends AbstractControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
 
     @Test
     @SneakyThrows
-    public void testProductList()  {
-
-        mockMvc.perform(get("/products").header("Authorization", tokenVasya))
+    public void testProductList() {
+        // given
+        final List<Product> productList = getAllProducts();
+        given(productRepository.findAll()).willReturn(productList);
+        // when
+        mockMvc.perform(get("/products").header("Authorization", signInAsRoleUser()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\n" +
                         "\"id\":1,\n" +
@@ -50,12 +47,19 @@ public class ProductControllerTest extends AbstractControllerTest {
                         " \"primeCost\": 12000,\n " +
                         " \"category\":\"Устройства для розлива\"\n " +
                         "}]}"));
+        //then
+        verify(authInfoRepository, times(2)).findByLogin(anyString());
+        verify(productRepository, times(1)).findAll();
     }
+
     @Test
     @SneakyThrows
-    public void testGetProductBottle()  {
-
-        mockMvc.perform(get("/products/1").header("Authorization", tokenVasya))
+    public void testGetProductBottle() {
+        // given
+        final Product product = getProductsById(1l);
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+        // when
+        mockMvc.perform(get("/products/1").header("Authorization", signInAsRoleUser()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
                         "\"id\":1,\n" +
@@ -64,13 +68,21 @@ public class ProductControllerTest extends AbstractControllerTest {
                         " \"primeCost\":60,\n" +
                         "\"category\":\"Тара для хранения\"\n" +
                         "}"));
+        //then
+        verify(authInfoRepository, times(2)).findByLogin(anyString());
+        verify(productRepository, times(1)).findById(anyLong());
     }
 
- @Test
- @SneakyThrows
+    @Test
+    @SneakyThrows
     public void testGetProductUnknown() {
-
-     mockMvc.perform(get("/products/999999").header("Authorization", tokenVasya))
-             .andExpect(status().isBadRequest());
- }
+        // given
+        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+        // when
+        mockMvc.perform(get("/products/999999").header("Authorization", signInAsRoleUser()))
+                .andExpect(status().isBadRequest());
+        //then
+        verify(authInfoRepository, times(2)).findByLogin(anyString());
+        verify(productRepository, times(1)).findById(anyLong());
+    }
 }

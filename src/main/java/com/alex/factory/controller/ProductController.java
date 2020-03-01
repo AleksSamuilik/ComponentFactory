@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Log
+
 @Data
 @RestController
 @RequestMapping(value = "/products")

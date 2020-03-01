@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-@Log
+
 @RequiredArgsConstructor
 @Service
 public class OrderService {
@@ -60,7 +60,6 @@ public class OrderService {
     private List<ProductDetails> saveProductDetails(final NewOrderRequest request) {
         final List<ProductDetails> productDetailsList = new ArrayList<>();
         final List<ProductDetailsDTO> requestProdDet = request.getProductDetails();
-
         requestProdDet.forEach(element -> {
             final Optional<Product> product = productRepository.findById(element.getId());
             final int sellCost = addSurcharge(product.get().getPrimeCost());

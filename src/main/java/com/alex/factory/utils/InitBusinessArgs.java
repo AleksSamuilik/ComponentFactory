@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Log
+
 @Component
 public class InitBusinessArgs {
 
