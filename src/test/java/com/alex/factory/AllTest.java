@@ -1,7 +1,6 @@
 package com.alex.factory;
 
 import com.alex.factory.dto.BriefDescriptOrder;
-import com.alex.factory.dto.OrderDTO;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.repository.OrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +21,7 @@ import static org.hamcrest.Matchers.hasLength;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Log
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
@@ -196,6 +196,22 @@ public class AllTest {
                 .andExpect(jsonPath(TOKEN, hasLength(144)));
     }
 
+    @Test
+    @SneakyThrows
+    public void testSignUpFactory() {
+
+        mockMvc.perform(post("/auth/add_admin").header("Authorization", tokenPetya)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"email\" : \"UNQ@email.com\",\n" +
+                        " \"password\" : \"qwerty\",\n" +
+                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
+                        "  \"phone\" : \"+375445333880\",\n" +
+                        "  \"position\" : \"Production manager\" \n" +
+                        "}"))
+                .andExpect(status().isCreated());
+    }
+
 
     // order
 
@@ -295,10 +311,10 @@ public class AllTest {
 
         final String orderId = createTestOrder();
 
-        mockMvc.perform(get("/orders/" + orderId).header("Authorization", tokenDima))
+        mockMvc.perform(get("/orders/" + orderId).header("Authorization", tokenPetya))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
-                        "   \"id\":"+orderId+",\n" +
+                        "   \"id\":" + orderId + ",\n" +
                         "   \"user\":{\n" +
                         "      \"id\":3,\n" +
                         "      \"email\":\"vasya@email.com\",\n" +
@@ -352,7 +368,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateStatusToWorkOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isOk());
@@ -362,7 +378,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateTimeAndCostOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{   \"endDate\":\"15.03.2020\",\n" +
                         "   \"cost\":900000\n" +
@@ -374,7 +390,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateStatusToCloseOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenDima)
+        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"close\" }"))
                 .andExpect(status().isOk());
@@ -404,10 +420,9 @@ public class AllTest {
     //product
 
 
-
     @Test
     @SneakyThrows
-    public void testProductList()  {
+    public void testProductList() {
 
         mockMvc.perform(get("/products").header("Authorization", tokenVasya))
                 .andExpect(status().isOk())
@@ -431,9 +446,10 @@ public class AllTest {
                         " \"category\":\"Устройства для розлива\"\n " +
                         "}]}"));
     }
+
     @Test
     @SneakyThrows
-    public void testGetProductBottle()  {
+    public void testGetProductBottle() {
 
         mockMvc.perform(get("/products/1").header("Authorization", tokenVasya))
                 .andExpect(status().isOk())
@@ -453,4 +469,15 @@ public class AllTest {
         mockMvc.perform(get("/products/999999").header("Authorization", tokenVasya))
                 .andExpect(status().isBadRequest());
     }
+
+    //company
+
+    @Test
+    @SneakyThrows
+    public void testDellCompany() {
+        mockMvc.perform(delete("/company/3").header("Authorization", tokenPetya))
+                .andExpect(status().isOk());
+    }
+
+
 }

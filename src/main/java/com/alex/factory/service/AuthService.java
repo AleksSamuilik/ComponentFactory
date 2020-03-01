@@ -21,7 +21,6 @@ import java.util.List;
 public class AuthService {
 
     private final JWTService jWTService;
-    private final AuthenticationManager authenticationManager;
     private final AuthInfoRepository authInfoRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,13 +36,7 @@ public class AuthService {
         }
 
         return new SignInResponse(jWTService.generateToken(getUserDetails(authInfoEntity)));
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
-//        SignInResponse signInResponse = new SignInResponse(JWTService.generateToken(
-//                new User(signInRequest.getEmail(), signInRequest.getPassword(), authentication.getAuthorities())));
-
     }
-
 
     private User getUserDetails(AuthInfoEntity authInfoEntity) {
         return new User(authInfoEntity.getLogin(), authInfoEntity.getPassword(), List.of(new SimpleGrantedAuthority(authInfoEntity.getUser().getUsersDescription().getRole().getName().name())));

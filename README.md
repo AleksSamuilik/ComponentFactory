@@ -74,7 +74,7 @@
 
 Request:
 
-`POST /componentFactory/sign-up`
+`POST /componentFactory/auth/sign-up`
 ```json
 {
    "company" : "ООО\"Аливария\"",
@@ -361,6 +361,53 @@ Request:
 Response:
 
 `200 OK`
+
+### CF-11 Как "Завод" я хочу удалить "Компанию", в результате удаляю
+
+Request:
+
+`DELETE /componentFactory/company/{companyId}`
+
+`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
+
+Response:
+
+`200 OK`
+
+### CF-12 Как "Завод" я хочу удалить "Заказ", в результате удаляю
+
+Request:
+
+`DELETE /componentFactory/order/{orderId}`
+
+`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
+
+Response:
+
+`200 OK`
+
+### CF-13 Как "Завод" я хочу добавить нового пользователя "Завод", в результате добавляю
+
+Request:
+
+`POST /componentFactory/auth/add_admin`
+
+`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
+
+
+```json
+{
+  "email" : "dima@email.com",
+  "password" : "qwerty",
+  "fullName" : "Пупкин Василий Иванович",
+  "phone" : "+375445333880", 
+  "position" : "Production manager" 
+}
+```
+
+Response:
+
+`201 CREATED`
 
 
 

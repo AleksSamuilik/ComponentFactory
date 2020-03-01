@@ -1,12 +1,14 @@
 package com.alex.factory.controller;
 
 import com.alex.factory.dto.Company;
+import com.alex.factory.dto.Factory;
 import com.alex.factory.dto.LoginForm;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.exception.CompFactSuchUserAlreadyExistException;
 import com.alex.factory.exception.CompFactWrongPasswordException;
 import com.alex.factory.service.AuthService;
 import com.alex.factory.service.CompanyService;
+import com.alex.factory.service.FactoryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,9 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final CompanyService companyService;
+    private final FactoryService factoryService;
     private final AuthService authService;
+
 
 
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -45,4 +49,19 @@ public class AuthController {
                                  @Valid @RequestBody final LoginForm loginFormRequest) throws UsernameNotFoundException, CompFactWrongPasswordException {
         return authService.signIn(loginFormRequest);
     }
+
+    @PostMapping(value = "/add_admin", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Company singUp", notes = "Use this method for create new Account")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "User created"),
+            @ApiResponse(code = 400, message = "User already exist")
+    })
+    public void singUpAdmin(@ApiParam(value = "User signUp data", required = true)
+                       @Valid @RequestBody final Factory signUpRequest) throws CompFactSuchUserAlreadyExistException {
+       factoryService.signUp(signUpRequest);
+    }
+
+
+
 }
