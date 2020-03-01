@@ -24,6 +24,6 @@ public class OrderDTO {
 
     private String status;
 
-    private List<ProductDetails> productDetails;
+    private List<ProductDetailsDTO> productDetails;
 
 }

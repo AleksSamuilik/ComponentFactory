@@ -3,6 +3,8 @@ package com.alex.factory;
 import com.alex.factory.dto.BriefDescriptOrder;
 import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.repository.OrderRepository;
+import com.alex.factory.repository.ProductRepository;
+import com.alex.factory.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
@@ -16,12 +18,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.hasLength;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Log
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
@@ -34,6 +38,10 @@ public class AllTest {
     protected ObjectMapper objectMapper;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
 
     protected static final String TOKEN = "token";
@@ -107,6 +115,24 @@ public class AllTest {
         orderRepository.deleteAll();
     }
 
+
+    @SneakyThrows
+    public Long createTestCompany() {
+
+        mockMvc.perform(post("/auth/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"company\" : \" ООО\\\"Аливария\\\"\",\n" +
+                        "  \"email\" : \"delCompany@email.com\",\n" +
+                        " \"password\" : \"qwerty\",\n" +
+                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
+                        "  \"phone\" : \"+375445333880\",\n" +
+                        "  \"info\" : \"Пивоварня №1 в СНГ\" \n" +
+                        "}"))
+                .andExpect(status().isCreated());
+        return userRepository.findByEmail("delCompany@email.com").get().getId();
+
+    }
 
     //auth
 
@@ -470,12 +496,86 @@ public class AllTest {
                 .andExpect(status().isBadRequest());
     }
 
-    //company
 
     @Test
     @SneakyThrows
     public void testDellCompany() {
-        mockMvc.perform(delete("/company/3").header("Authorization", tokenPetya))
+        mockMvc.perform(delete("/company/" + createTestCompany()).header("Authorization", tokenPetya))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testDellOrder() {
+        mockMvc.perform(delete("/orders/" + createTestOrder()).header("Authorization", tokenPetya))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testAddNewProduct() {
+
+        mockMvc.perform(post("/products").header("Authorization", tokenPetya)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        " \"name\":\"Бутылка\",\n" +
+                        "\"type\": \"1.5\",\n" +
+                        " \"primeCost\":100,\n" +
+                        "\"category\":\"Тара для хранения\"\n" +
+                        "}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testUpdateCostProduct() {
+
+        mockMvc.perform(put("/products/1").header("Authorization", tokenPetya)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        " \"primeCost\":75\n" +
+                        "}"))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetRevenueMonth() {
+
+        mockMvc.perform(post("/orders").header("Authorization", tokenDima)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"productDetails\": [\n" +
+                        "        {\n" +
+                        "            \"id\": 1,\n" +
+                        "            \"quantity\": 10000\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"id\": 2,\n" +
+                        "            \"quantity\": 4\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"startDate\": \"12.02.2020\",\n" +
+                        "    \"endDate\": \"16.03.2020\"\n" +
+                        "}"))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetStaticsForOrder() {
+        createTestOrder();
+        createTestOrder();
+        createTestOrder();
+        mockMvc.perform(post("/orders").header("Authorization", tokenPetya)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+
+                        "    \"status\": \"close\",\n" +
+                        "    \"cost\": \"5000\"\n" +
+                        "}"))
                 .andExpect(status().isOk());
     }
 

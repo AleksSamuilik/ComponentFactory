@@ -3,16 +3,16 @@ package com.alex.factory.controller;
 import com.alex.factory.model.Product;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,6 +82,40 @@ public class ProductControllerTest extends AbstractControllerTest {
         mockMvc.perform(get("/products/999999").header("Authorization", signInAsRoleUser()))
                 .andExpect(status().isBadRequest());
         //then
+        verify(authInfoRepository, times(2)).findByLogin(anyString());
+        verify(productRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testAddNewProduct() {
+
+        mockMvc.perform(post("/products").header("Authorization", signInAsRoleAdmin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        " \"name\":\"Бутылка\",\n" +
+                        "\"type\": \"1.5\",\n" +
+                        " \"primeCost\":100,\n" +
+                        "\"category\":\"Тара для хранения\"\n" +
+                        "}"))
+                .andExpect(status().isCreated());
+        verify(authInfoRepository, times(2)).findByLogin(anyString());
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testUpdateCostProduct() {
+        // given
+        final Product product = getProductsById(1l);
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+        // when
+        mockMvc.perform(put("/products/1").header("Authorization", signInAsRoleAdmin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        " \"primeCost\":75\n" +
+                        "}"))
+                .andExpect(status().isOk());
         verify(authInfoRepository, times(2)).findByLogin(anyString());
         verify(productRepository, times(1)).findById(anyLong());
     }

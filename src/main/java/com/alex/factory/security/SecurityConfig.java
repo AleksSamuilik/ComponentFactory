@@ -29,19 +29,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/orders").hasRole(UserRole.ADMIN.name())
-                .antMatchers(HttpMethod.GET, "/orders/*").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
-                .antMatchers(HttpMethod.PUT, "/orders/*").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/auth/add_admin","/products").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/orders/*","products/*").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.DELETE, "/company/*", "/orders/*").hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.GET, "/orders", "/company/*", "/factory/*").hasRole(UserRole.ADMIN.name())
+
+                .antMatchers(HttpMethod.POST, "/orders").hasRole(UserRole.ADMIN.name())
                 .antMatchers(HttpMethod.POST, "/orders/**").hasRole(UserRole.USER.name())
 
-                .antMatchers(HttpMethod.GET, "/products").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
-                .antMatchers(HttpMethod.GET, "/products/*").hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())
-
+                .antMatchers(HttpMethod.GET, "/products/*", "/orders/*", "/products").authenticated()
 
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().disable();
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/company")
-@Api(tags = "Company Service")
+@RequestMapping(value = "/factory")
+@Api(tags = "Factory Service")
 public class FactoryController {
 }

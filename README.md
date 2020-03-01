@@ -66,9 +66,9 @@
 
 ## User Stories
 
-## US-1
 В первую очередь начнем с работы "Компании" с системой.
 Регистрация на сайте "Завода".
+
 
 ### CF-1 Как "Компания" я хочу зарегистрироваться в системе, и, если такого пользователя не найдено, регистрируюсь
 
@@ -89,6 +89,7 @@ Request:
 Response:
 
 `201 CREATED`
+
 
 ### CF-2 Как "Компания", будучи зарегистрированным пользователем, я хочу войти в систему, и, если такой пользователь существует и пароль совпадает, войти в систему
 
@@ -112,7 +113,55 @@ Response:
 }
 ```
 
-### CF-3 Как "Компания" я хочу посмотреть список товаров, и в результате получаю список товаров
+
+### CF-3 Как "Завод" я хочу добавить нового пользователя "Завод", в результате добавляю
+
+Request:
+
+`POST /componentFactory/auth/add_admin`
+
+`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
+
+
+```json
+{
+  "email" : "UNQ@email.com",
+  "password" : "qwerty",
+  "fullName" : "Пупкин Василий Иванович",
+  "phone" : "+375445333880", 
+  "position" : "Production manager" 
+}
+```
+
+Response:
+
+`201 CREATED`
+
+
+### CF-4 Как "Завод", будучи зарегистрированным пользователем, я хочу войти в систему, и, если такой пользователь существует и пароль совпадает, войти в систему
+
+Request:
+
+`POST /componentFactory/auth/sign-in`
+```json
+{
+  "email" : "petya@email.com",
+  "password" : "123qweasdzxc"
+}
+```
+
+Response:
+
+`200 OK`
+
+```json
+{
+    "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBldHlhQGVtYWlsLmNvbSIsImlhdCI6MTU4MTAwMDE5OCwiZXhwIjoxNTgxMDg2NTk4fQ.Ay1NMwXVorXg71kUKPcl5kVrpsqAibUAkbXyEOvF_OU1Y_5WLulIAzntoBIAQEopEfmeh5nvqmemIagFgJfNgQ"
+}
+```
+
+
+### CF-5 Как "Компания" я хочу посмотреть список товаров, и в результате получаю список товаров
 
 Request:
 
@@ -150,7 +199,30 @@ Response:
 ]
 ```
 
-### CF-4 Как "Компания" я хочу сделать заказ на 10000 бутылок и 4 воздушных фильтра для пивоварни , и в результате получаю счет-фактуру
+
+### CF-6 Как "Компания" я хочу посмотреть товар, и в результате получаю товар
+
+Request:
+
+`GET /componentFactory/products/1`
+
+`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZhc3lhQGVtYWlsLmNvbSIsImlhdCI6MTU4MTAwMDE5OCwiZXhwIjoxNTgxMDg2NTk4fQ.X-LwrENDF6t1i8w2guPGXW-nODArpn-WkT81iycxUrN7lpjJQxEuCJKgp15aCWoLEArbOqVQuZmtjTd_Tn7DLw` 
+
+
+Response:
+
+`200 OK`
+```json
+   {
+      "id":1,
+      "name":"Бутылка",
+      "type":"0.5",
+      "primeCost":60,
+      "category":"Тара для хранения"
+   }
+```
+
+### CF-7 Как "Компания" я хочу сделать заказ на 10000 бутылок и 4 воздушных фильтра для пивоварни , и в результате получаю счет-фактуру
 
 Request:
 
@@ -180,15 +252,14 @@ Response:
 ```json
 {
    "orderId" : 1,
-   "company" :  " ООО\"Аливария\"",
-    "email": "vasya@email.com",
     "startDate" : "12.03.2020",
     "endDate" : "12.03.2020",
-    "cost": 756201
+    "cost": 756201,
+    "status": "waits confirmation"
     }
 ```
 
-### CF-5 Как "Компания" я смотрю счет-фактуру, и в результате подтверждаю заказ
+### CF-8 Как "Компания" я смотрю счет-фактуру, и в результате подтверждаю заказ
 
 Заявка сохраняется  в базе. 
 
@@ -208,34 +279,8 @@ Response:
 
 `200 OK`
 
-## US-2
-Теперь рассмотрим работу "Завода" с системой.
-Начнем с человека ответственного за заказы. 
-Данный пользователь уже зарегистрирован с соответствующими правами.
 
-### CF-6 Как "Завод", будучи зарегистрированным пользователем, я хочу войти в систему, и, если такой пользователь существует и пароль совпадает, войти в систему
-
-Request:
-
-`POST /componentFactory/auth/sign-in`
-```json
-{
-  "email" : "petya@email.com",
-  "password" : "123qweasdzxc"
-}
-```
-
-Response:
-
-`200 OK`
-
-```json
-{
-    "toke": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBldHlhQGVtYWlsLmNvbSIsImlhdCI6MTU4MTAwMDE5OCwiZXhwIjoxNTgxMDg2NTk4fQ.Ay1NMwXVorXg71kUKPcl5kVrpsqAibUAkbXyEOvF_OU1Y_5WLulIAzntoBIAQEopEfmeh5nvqmemIagFgJfNgQ"
-}
-```
-
-### CF-7 Как "Завод" я хочу посмотреть список заявок, и в результате получаю список заявок
+### CF-9 Как "Завод" я хочу посмотреть список заявок, и в результате получаю список заявок
 
 Request:
 
@@ -274,12 +319,8 @@ Response:
 ]
 ```
 
-## US-3
-Продолжим рассматривать работу "Завода" с системой.
-Теперь от начальника производства.
-Данный пользователь уже зарегистрирован с соответствующими правами и вошел в систему.
 
-### CF-8 Как "Завод" я хочу открыть заказ , и в результате вижу содержимое заказа
+### CF-10 Как "Завод" я хочу открыть заказ, и в результате вижу содержимое заказа
 
 Request:
 
@@ -327,7 +368,7 @@ Response:
 }
 ```
 
-### CF-9 Как "Завод" я смотрю заказ, и в результате ставлю статус заказа в "работе"
+### CF-11 Как "Завод" я смотрю заказ, и в результате ставлю статус заказа в "работе"
 
 Request:
 
@@ -345,7 +386,7 @@ Response:
 
 `200 OK`
 
-### CF-10 Как "Завод" подготовив заказ, в результате ставлю статус заказа в "закрыт"
+### CF-12 Как "Завод" подготовив заказ, в результате ставлю статус заказа в "закрыт"
 
 Request:
 
@@ -354,15 +395,15 @@ Request:
 `Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
 
 ```json
-{ "orderId": 1,
-"status": "work" }
+{
+"status": "close" }
 ```
 
 Response:
 
 `200 OK`
 
-### CF-11 Как "Завод" я хочу удалить "Компанию", в результате удаляю
+### CF-13 Как "Завод" я хочу удалить "Компанию", в результате удаляю
 
 Request:
 
@@ -374,7 +415,7 @@ Response:
 
 `200 OK`
 
-### CF-12 Как "Завод" я хочу удалить "Заказ", в результате удаляю
+### CF-14 Как "Завод" я хочу удалить "Заказ", в результате удаляю
 
 Request:
 
@@ -386,36 +427,33 @@ Response:
 
 `200 OK`
 
-### CF-13 Как "Завод" я хочу добавить нового пользователя "Завод", в результате добавляю
+
+### CF-15 Как "Завод" я хочу изменить стоимость продукта, в результате меняю цену
 
 Request:
 
-`POST /componentFactory/auth/add_admin`
+`PUT /componentFactory/products/1`
 
-`Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
-
+Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 
 ```json
 {
-  "email" : "dima@email.com",
-  "password" : "qwerty",
-  "fullName" : "Пупкин Василий Иванович",
-  "phone" : "+375445333880", 
-  "position" : "Production manager" 
+   "name":"Бутылка",
+   "type":"0.5",
+   "primeCost":75,
+   "category":"Тара для хранения"
 }
 ```
 
 Response:
 
-`201 CREATED`
+201 CREATED
 
-
-
-### CF-XX Как "Завод" добавляю новый товар
+### CF-16X Как "Завод" добавляю новый товар
 
 Request:
 
-POST /componentFactory/products
+`POST /componentFactory/products`
 
 Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 
@@ -433,11 +471,11 @@ Response:
 
 201 CREATED
 
-### CF-XXX Как "Завод" редактирую заказ
+### CF-17X Как "Завод" редактирую заказ
 
 Request:
 
-PATCH /componentFactory/orders/{orderId}
+`PUT /componentFactory/orders/{orderId}`
 
 Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 

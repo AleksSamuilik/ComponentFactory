@@ -6,6 +6,7 @@ import com.alex.factory.dto.SignInResponse;
 import com.alex.factory.repository.OrderRepository;
 import com.alex.factory.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
 public class DemoTest {
     private static final String TOKEN = "token";
-    private String tokenVasya;
-    private String tokenPetya;
-    private String tokenDima;
-    private String orderId;
-    private String orderIdNext;
+    private String tokenUser;
+    private String tokenADMIN;
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,114 +43,38 @@ public class DemoTest {
 
     @BeforeEach
     private void init() {
-        tokenVasya = signInAsVasya();
-        tokenPetya = signInAsPetya();
-        tokenDima = signInAsDima();
-        orderId = createTestOrder();
-        orderIdNext = String.valueOf(Long.valueOf(orderId) + 1l);
+        tokenUser = signInAsVasya();
+        tokenADMIN = signInAsPetya();
     }
 
     @Test
     @SneakyThrows
     public void DemoTest() {
 
-        // for Company
-        //auth
-        testSignUpCompany();
-        testSignInCompany();
-        //order
-        testNewOrder();
-        testRegisterOrderConfirmed();
-        testRegisterOrderCanceled();
-        //product
-        testProductList();
-        testGetProductBottle();
-        //company
-
-
-        //for Factory
-        //auth
-        testSignInFactory();
-        testSignUpFactory();
-        //order
-        testOrderList();
-        testGetNumberOrder();
-        testUpdateStatusToWorkOrder();
-        testUpdateTimeAndCostOrder();
-        testUpdateStatusToCloseOrder();
-        //product
-
-        //company
-        testDelCompany();
-
+        signUpCompany();
+        signInCompany();
+        signUpFactory();
+        signInFactory();
+        createOrder();
+        registerOrderIsConfirmed();
+        registerOrderIsCanceled();
+        getProductList();
+        getProduct();
+        updateStatusToWorkOrder();
+        updateStatusToCloseOrder();
+        updateDataOrder();
+        getOrderList();
+        getOrder();
+        delOrder();
+        delCompany();
+        createProduct();
+        updateCostProduct();
+        getOrdersForStatusAndCost();
+        getOrdersForStatus();
     }
 
     @SneakyThrows
-    protected String signInAsAccount(final String email, final String password, final int lengthToken) {
-        final String response = mockMvc.perform(post("/auth/sign-in")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"email\" : \"" + email + "\",\n" +
-                        " \"password\" : \"" + password + "\"\n" +
-                        "}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("token", hasLength(lengthToken)))
-                .andReturn().getResponse().getContentAsString();
-        return "Bearer " + objectMapper.readValue(response, SignInResponse.class).getToken();
-    }
-
-    @SneakyThrows
-    protected String createTestOrder() {
-        final String response = mockMvc.perform(post("/orders/new").header("Authorization", tokenVasya)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"productDetails\": [\n" +
-                        "        {\n" +
-                        "            \"id\": 1,\n" +
-                        "            \"quantity\": 10000\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": 2,\n" +
-                        "            \"quantity\": 4\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"startDate\": \"12.02.2020\",\n" +
-                        "    \"endDate\": \"16.03.2020\"\n" +
-                        "}"))
-                .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
-        return String.valueOf(objectMapper.readValue(response, BriefDescriptOrder.class).getId());
-    }
-
-    @SneakyThrows
-    public Long createTestCompany() {
-
-        mockMvc.perform(post("/auth/sign-up")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"company\" : \" ООО\\\"Аливария\\\"\",\n" +
-                        "  \"email\" : \"delCompany@email.com\",\n" +
-                        " \"password\" : \"qwerty\",\n" +
-                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
-                        "  \"phone\" : \"+375445333880\",\n" +
-                        "  \"info\" : \"Пивоварня №1 в СНГ\" \n" +
-                        "}"))
-                .andExpect(status().isCreated());
-        return userRepository.findByEmail("delCompany@email.com").get().getId();
-
-    }
-
-    @Transactional
-    protected void deleteAllOrder() {
-        orderRepository.deleteAll();
-    }
-
-
-    //auth
-
-
-    @SneakyThrows
-    public void testSignUpCompany() {
+    public void signUpCompany() {
 
         mockMvc.perform(post("/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -166,9 +89,8 @@ public class DemoTest {
                 .andExpect(status().isCreated());
     }
 
-
     @SneakyThrows
-    public void testSignInCompany() {
+    public void signInCompany() {
         mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -179,24 +101,10 @@ public class DemoTest {
                 .andExpect(jsonPath(TOKEN, hasLength(144)));
     }
 
-
     @SneakyThrows
-    public void testSignInFactory() {
-        mockMvc.perform(post("/auth/sign-in")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"email\" : \"petya@email.com\",\n" +
-                        " \"password\" : \"123qweasdzxc\"\n" +
-                        "}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(TOKEN, hasLength(144)));
-    }
+    public void signUpFactory() {
 
-
-    @SneakyThrows
-    public void testSignUpFactory() {
-
-        mockMvc.perform(post("/auth/add_admin").header("Authorization", tokenPetya)
+        mockMvc.perform(post("/auth/add_admin").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"email\" : \"UNQ@email.com\",\n" +
@@ -208,15 +116,22 @@ public class DemoTest {
                 .andExpect(status().isCreated());
     }
 
-
-    // order
-
+    @SneakyThrows
+    public void signInFactory() {
+        mockMvc.perform(post("/auth/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"email\" : \"petya@email.com\",\n" +
+                        " \"password\" : \"123qweasdzxc\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(TOKEN, hasLength(144)));
+    }
 
     @SneakyThrows
-    public void testNewOrder() {
+    public void createOrder() {
 
-
-        mockMvc.perform(post("/orders/new").header("Authorization", tokenVasya)
+        mockMvc.perform(post("/orders/new").header("Authorization", tokenUser)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"productDetails\": [\n" +
@@ -234,7 +149,7 @@ public class DemoTest {
                         "}"))
                 .andExpect(status().isCreated())
                 .andExpect(content().json("{\n" +
-                        " \"id\": " + orderIdNext + ",\n" +
+                        " \"id\": 1,\n" +
                         " \"cost\": 756201,\n" +
                         "    \"startDate\": \"12.02.2020\",\n" +
                         "    \"endDate\": \"12.03.2020\",\n" +
@@ -242,11 +157,10 @@ public class DemoTest {
                         "}"));
     }
 
-
     @SneakyThrows
-    public void testRegisterOrderConfirmed() {
+    public void registerOrderIsConfirmed() {
 
-        mockMvc.perform(post("/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
+        mockMvc.perform(post("/orders/1/submit").header("Authorization", tokenUser)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "\"isConfirmed\": \"true\"\n" +
@@ -254,11 +168,11 @@ public class DemoTest {
                 .andExpect(status().isOk());
     }
 
-
     @SneakyThrows
-    public void testRegisterOrderCanceled() {
+    public void registerOrderIsCanceled() {
 
-        mockMvc.perform(post("/orders/" + orderId + "/submit").header("Authorization", tokenVasya)
+        String orderId = createTestOrder();
+        mockMvc.perform(post("/orders/" + orderId + "/submit").header("Authorization", tokenUser)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "\"isConfirmed\": \"false\"\n" +
@@ -266,16 +180,85 @@ public class DemoTest {
                 .andExpect(status().isOk());
     }
 
+    @SneakyThrows
+    public void getProductList() {
+
+        mockMvc.perform(get("/products").header("Authorization", tokenUser))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\n" +
+                        "\"id\":1,\n" +
+                        " \"name\":\"Бутылка\",\n" +
+                        "\"type\": \"0.5\",\n" +
+                        " \"primeCost\":60,\n" +
+                        "\"category\":\"Тара для хранения\"\n" +
+                        "},{\n" +
+                        "\"id\":2,\n " +
+                        " \"name\":\"Воздушный фильтр\",\n " +
+                        "\"type\":\"0.1\",\n " +
+                        "\"primeCost\":40,\n " +
+                        " \"category\":\"Фильтрация и сорбирование\"\n " +
+                        "},{\n" +
+                        "\"id\":3,\n " +
+                        "  \"name\":\"Кран\",\n " +
+                        " \"type\":\"45-120\",\n " +
+                        " \"primeCost\": 12000,\n " +
+                        " \"category\":\"Устройства для розлива\"\n " +
+                        "}]}"));
+    }
 
     @SneakyThrows
-    public void testOrderList() {
+    public void getProduct() {
+
+        mockMvc.perform(get("/products/1").header("Authorization", tokenUser))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\n" +
+                        "\"id\":1,\n" +
+                        " \"name\":\"Бутылка\",\n" +
+                        "\"type\": \"0.5\",\n" +
+                        " \"primeCost\":60,\n" +
+                        "\"category\":\"Тара для хранения\"\n" +
+                        "}"));
+    }
+
+    @SneakyThrows
+    public void updateStatusToWorkOrder() {
+
+        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"status\":\"work\" }"))
+                .andExpect(status().isOk());
+    }
+
+    @SneakyThrows
+    public void updateStatusToCloseOrder() {
+
+        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"status\":\"close\" }"))
+                .andExpect(status().isOk());
+    }
+
+    @SneakyThrows
+    public void updateDataOrder() {
+
+        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{   \"endDate\":\"15.03.2020\",\n" +
+                        "   \"cost\":900000\n" +
+                        "}"))
+                .andExpect(status().isOk());
+    }
+
+
+    @SneakyThrows
+    public void getOrderList() {
 
         deleteAllOrder();
         final String firstId = createTestOrder();
         final String secondId = createTestOrder();
         final String thirdId = createTestOrder();
 
-        mockMvc.perform(get("/orders").header("Authorization", tokenPetya))
+        mockMvc.perform(get("/orders").header("Authorization", tokenADMIN))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[\n" +
                         "{\n" +
@@ -299,13 +282,11 @@ public class DemoTest {
                         "}]"));
     }
 
-
     @SneakyThrows
-    public void testGetNumberOrder() {
+    public void getOrder() {
 
         final String orderId = createTestOrder();
-
-        mockMvc.perform(get("/orders/" + orderId).header("Authorization", tokenPetya))
+        mockMvc.perform(get("/orders/" + orderId).header("Authorization", tokenADMIN))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
                         "   \"id\":" + orderId + ",\n" +
@@ -358,104 +339,180 @@ public class DemoTest {
                         "}"));
     }
 
-
     @SneakyThrows
-    public void testUpdateStatusToWorkOrder() {
-
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenPetya)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"status\":\"work\" }"))
+    public void delOrder() {
+        mockMvc.perform(delete("/orders/" + createTestOrder()).header("Authorization", tokenADMIN))
                 .andExpect(status().isOk());
     }
 
+    @SneakyThrows
+    public void delCompany() {
+        mockMvc.perform(delete("/company/" + createTestCompany()).header("Authorization", tokenADMIN))
+                .andExpect(status().isOk());
+    }
 
     @SneakyThrows
-    public void testUpdateTimeAndCostOrder() {
+    public void createProduct() {
 
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenPetya)
+        mockMvc.perform(post("/products").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{   \"endDate\":\"15.03.2020\",\n" +
-                        "   \"cost\":900000\n" +
+                .content("{\n" +
+                        " \"name\":\"Бутылка\",\n" +
+                        "\"type\": \"1.5\",\n" +
+                        " \"primeCost\":100,\n" +
+                        "\"category\":\"Тара для хранения\"\n" +
+                        "}"))
+                .andExpect(status().isCreated());
+    }
+
+    @SneakyThrows
+    public void updateCostProduct() {
+
+        mockMvc.perform(put("/products/1").header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        " \"primeCost\":75\n" +
                         "}"))
                 .andExpect(status().isOk());
     }
 
 
     @SneakyThrows
-    public void testUpdateStatusToCloseOrder() {
-
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenPetya)
+    public void getOrdersForStatusAndCost() {
+        updateStatusToCloseOrder();
+   mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"status\":\"close\" }"))
-                .andExpect(status().isOk());
-    }
-
-
-    //product
-
-
-    @SneakyThrows
-    public void testProductList() {
-
-        mockMvc.perform(get("/products").header("Authorization", tokenVasya))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{\n" +
-                        "\"id\":1,\n" +
-                        " \"name\":\"Бутылка\",\n" +
-                        "\"type\": \"0.5\",\n" +
-                        " \"primeCost\":60,\n" +
-                        "\"category\":\"Тара для хранения\"\n" +
-                        "},{\n" +
-                        "\"id\":2,\n " +
-                        " \"name\":\"Воздушный фильтр\",\n " +
-                        "\"type\":\"0.1\",\n " +
-                        "\"primeCost\":40,\n " +
-                        " \"category\":\"Фильтрация и сорбирование\"\n " +
-                        "},{\n" +
-                        "\"id\":3,\n " +
-                        "  \"name\":\"Кран\",\n " +
-                        " \"type\":\"45-120\",\n " +
-                        " \"primeCost\": 12000,\n " +
-                        " \"category\":\"Устройства для розлива\"\n " +
-                        "}]}"));
-    }
-
-
-    @SneakyThrows
-    public void testGetProductBottle() {
-
-        mockMvc.perform(get("/products/1").header("Authorization", tokenVasya))
+                .content("{\n" +
+                        "    \"status\": \"close\",\n" +
+                        "    \"cost\": \"800000\"\n" +
+                        "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
-                        "\"id\":1,\n" +
-                        " \"name\":\"Бутылка\",\n" +
-                        "\"type\": \"0.5\",\n" +
-                        " \"primeCost\":60,\n" +
-                        "\"category\":\"Тара для хранения\"\n" +
+                        "   \"listOrdersStatusAndCost\":[\n" +
+                        "      {\n" +
+                        "         \"id\":11,\n" +
+                        "         \"startDate\":\"12.02.2020\",\n" +
+                        "         \"endDate\":\"12.03.2020\",\n" +
+                        "         \"cost\":945201,\n" +
+                        "         \"status\":\"close\"\n" +
+                        "      }\n" +
+                        "   ]\n" +
                         "}"));
     }
 
 
-    //company
-
     @SneakyThrows
-    public void testDelCompany() {
-        mockMvc.perform(delete("/company/" + createTestCompany()).header("Authorization", tokenPetya))
-                .andExpect(status().isOk());
+    public void getOrdersForStatus() {
+        updateStatusToCloseOrder();
+    mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"status\": \"close\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\n" +
+                        "   \"listOrderStatus\":[\n" +
+                        "      {\n" +
+                        "         \"id\":11,\n" +
+                        "         \"startDate\":\"12.02.2020\",\n" +
+                        "         \"endDate\":\"12.03.2020\",\n" +
+                        "         \"cost\":945201,\n" +
+                        "         \"status\":\"close\"\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "         \"id\":12,\n" +
+                        "         \"startDate\":\"12.02.2020\",\n" +
+                        "         \"endDate\":\"12.03.2020\",\n" +
+                        "         \"cost\":945201,\n" +
+                        "         \"status\":\"close\"\n" +
+                        "      }\n" +
+                        "   ]\n" +
+                        "}"));
     }
 
+
+    @SneakyThrows
+    public void getOrdersForCost() {
+        updateStatusToCloseOrder();
+    mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"cost\": \"800000\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(""));
+    }
+
+
+
+
+
+
+    @SneakyThrows
+    protected String signInAsAccount(final String email, final String password, final int lengthToken) {
+        final String response = mockMvc.perform(post("/auth/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"email\" : \"" + email + "\",\n" +
+                        " \"password\" : \"" + password + "\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("token", hasLength(lengthToken)))
+                .andReturn().getResponse().getContentAsString();
+        return "Bearer " + objectMapper.readValue(response, SignInResponse.class).getToken();
+    }
+
+    @SneakyThrows
+    protected String createTestOrder() {
+        final String response = mockMvc.perform(post("/orders/new").header("Authorization", tokenUser)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"productDetails\": [\n" +
+                        "        {\n" +
+                        "            \"id\": 1,\n" +
+                        "            \"quantity\": 10000\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"id\": 2,\n" +
+                        "            \"quantity\": 4\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"startDate\": \"12.02.2020\",\n" +
+                        "    \"endDate\": \"16.03.2020\"\n" +
+                        "}"))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        return String.valueOf(objectMapper.readValue(response, BriefDescriptOrder.class).getId());
+    }
+
+    @SneakyThrows
+    public Long createTestCompany() {
+
+        mockMvc.perform(post("/auth/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"company\" : \" ООО\\\"Аливария\\\"\",\n" +
+                        "  \"email\" : \"delCompany@email.com\",\n" +
+                        " \"password\" : \"qwerty\",\n" +
+                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
+                        "  \"phone\" : \"+375445333880\",\n" +
+                        "  \"info\" : \"Пивоварня №1 в СНГ\" \n" +
+                        "}"))
+                .andExpect(status().isCreated());
+        return userRepository.findByEmail("delCompany@email.com").get().getId();
+
+    }
+
+    @Transactional
+    protected void deleteAllOrder() {
+        orderRepository.deleteAll();
+    }
 
     private String signInAsVasya() {
         return signInAsAccount("vasya@email.com", "qwerty", 144);
     }
 
-    private String signInAsDima() {
-        return signInAsAccount("dima@email.com", "cxzdsaewq321", 143);
-    }
-
     private String signInAsPetya() {
         return signInAsAccount("petya@email.com", "123qweasdzxc", 144);
     }
-
-
 }

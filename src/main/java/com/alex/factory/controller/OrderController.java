@@ -36,6 +36,19 @@ public class OrderController {
         return orderService.newOrder(newOrderRequest, authentication.getName());
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Operations with order data", notes = "Use this method, if you want use  operations with order data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully create order"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public OperationOrderResponse operationOrder(@ApiParam(value = "Operations order data") @Valid @RequestBody final OperationOrder operationOrderRequest) throws CompFactNoSuchElementException {
+        return orderService.operationOrder(operationOrderRequest);
+    }
+
     @ApiOperation(value = "Confirm order status", notes = "Use this method, if you want to confirm order, or canceled")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully confirm order or canceled order"),
@@ -89,7 +102,7 @@ public class OrderController {
         return orderService.getAllOrder();
     }
 
-    @DeleteMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Delete order", notes = "Use this method, if you want to delete order")
     @ApiResponses(value = {
@@ -98,7 +111,7 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public void deleteOrder(@PathVariable final Long orderId) throws CompFactOrderNotFoundException {
-        orderService.checkDeleteOrder(orderId);
+    public void delOrder(@PathVariable final Long orderId) throws CompFactOrderNotFoundException {
+        orderService.delOrder(orderId);
     }
 }

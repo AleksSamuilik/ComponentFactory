@@ -118,4 +118,42 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath(TOKEN, hasLength(144)));
         verify(authInfoRepository, times(1)).findByLogin(anyString());
     }
+
+
+    @Test
+    @SneakyThrows
+    public void testSignUpFactory() {
+        // given
+        given(authInfoRepository.findByLogin(anyString())).willReturn(Optional.empty());
+        // when
+        mockMvc.perform(post("/auth/add_admin").header("Authorization", signInAsRoleAdmin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"email\" : \"newAdmin@email.com\",\n" +
+                        " \"password\" : \"qwerty\",\n" +
+                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
+                        "  \"phone\" : \"+375445333880\",\n" +
+                        "  \"position\" : \"Production manager\" \n" +
+                        "}"))
+                .andExpect(status().isCreated());
+        verify(authInfoRepository, times(3)).findByLogin(anyString());
+        verify(authInfoRepository, times(1)).save(any(AuthInfoEntity.class));
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testSignUpFactoryWithoutNotAuthorisation() {
+
+        mockMvc.perform(post("/auth/add_admin").header("Authorization", signInAsRoleUser())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"email\" : \"newAdmin@email.com\",\n" +
+                        " \"password\" : \"qwerty\",\n" +
+                        "  \"fullName\" : \"Пупкин Василий Иванович\", \n" +
+                        "  \"phone\" : \"+375445333880\",\n" +
+                        "  \"position\" : \"Production manager\" \n" +
+                        "}"))
+                .andExpect(status().isForbidden());
+    }
 }

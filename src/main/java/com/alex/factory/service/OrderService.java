@@ -1,9 +1,9 @@
 package com.alex.factory.service;
 
-import com.alex.factory.mapper.OrderMapper;
 import com.alex.factory.dto.*;
 import com.alex.factory.exception.CompFactNoSuchElementException;
 import com.alex.factory.exception.CompFactOrderNotFoundException;
+import com.alex.factory.mapper.OrderMapper;
 import com.alex.factory.model.Order;
 import com.alex.factory.model.Product;
 import com.alex.factory.model.ProductDetails;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Log
 public class OrderService {
 
 
@@ -37,7 +38,6 @@ public class OrderService {
     private final ProductDetailsRepository productDetailsRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-
 
 
     @Transactional
@@ -128,8 +128,39 @@ public class OrderService {
         }
     }
 
-    public void checkDeleteOrder(final Long orderId) throws CompFactOrderNotFoundException {
+
+    public void delOrder(final Long orderId) throws CompFactOrderNotFoundException {
         final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactOrderNotFoundException("Order not found"));
         deleteOrder(order);
+    }
+
+    public OperationOrderResponse operationOrder(OperationOrder operationOrderRequest) throws CompFactNoSuchElementException {
+        final OperationOrderResponse operationOrderResponse = new OperationOrderResponse();
+        if (operationOrderRequest.getCost() != null&&operationOrderRequest.getStatus() != null){
+            final Optional<List<Order>> orderList = orderRepository.findAllByStatusAndCostAfter(operationOrderRequest.getStatus(),operationOrderRequest.getCost());
+            if (!orderList.isEmpty()) {
+                final List<BriefDescriptOrder> briefDescriptOrderList = orderList.get().stream().map(orderMapper::destinationToSourceBriefDescriptOrder).collect(Collectors.toList());
+                operationOrderResponse.setListOrdersStatusAndCost(briefDescriptOrderList);
+            }
+        }else {
+            if (operationOrderRequest.getCost() != null) {
+                final Optional<List<Order>> orderList = orderRepository.findAllByCostAfter(operationOrderRequest.getCost());
+                if (!orderList.isEmpty()) {
+                    final List<BriefDescriptOrder> briefDescriptOrderList = orderList.get().stream().map(orderMapper::destinationToSourceBriefDescriptOrder).collect(Collectors.toList());
+                    operationOrderResponse.setListOrdersCost(briefDescriptOrderList);
+                }
+            }
+            if (operationOrderRequest.getStatus() != null) {
+                final Optional<List<Order>> orderList = orderRepository.findAllByStatus(operationOrderRequest.getStatus());
+                if (!orderList.isEmpty()) {
+                    final List<BriefDescriptOrder> briefDescriptOrderList = orderList.get().stream().map(orderMapper::destinationToSourceBriefDescriptOrder).collect(Collectors.toList());
+                    operationOrderResponse.setListOrderStatus(briefDescriptOrderList);
+                }
+            }
+        }
+        log.info(operationOrderResponse.toString());
+
+
+        return operationOrderResponse;
     }
 }
