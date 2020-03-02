@@ -265,7 +265,7 @@ Response:
 
 Request:
 
-`POST /componentFactory/orders/1`
+`POST /componentFactory/orders/1/submit`
 
 `Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZhc3lhQGVtYWlsLmNvbSIsImlhdCI6MTU4MTAwMDE5OCwiZXhwIjoxNTgxMDg2NTk4fQ.X-LwrENDF6t1i8w2guPGXW-nODArpn-WkT81iycxUrN7lpjJQxEuCJKgp15aCWoLEArbOqVQuZmtjTd_Tn7DLw` 
 
@@ -372,7 +372,7 @@ Response:
 
 Request:
 
-`PATCH /componentFactory/orders/{orderId}`
+`PUT /componentFactory/orders/{orderId}`
 
 `Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
 
@@ -390,7 +390,7 @@ Response:
 
 Request:
 
-`PATCH /componentFactory/orders/{orderId}`
+`PUT /componentFactory/orders/{orderId}`
 
 `Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w` 
 
@@ -432,7 +432,7 @@ Response:
 
 Request:
 
-`PATCH /componentFactory/products/1`
+`PUT/componentFactory/products/1`
 
 Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 
@@ -447,7 +447,7 @@ Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6I
 
 Response:
 
-201 CREATED
+200 CREATED
 
 ### CF-16X Как "Завод" добавляю новый товар
 

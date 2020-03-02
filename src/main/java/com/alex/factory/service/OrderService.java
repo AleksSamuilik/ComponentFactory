@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@Log
+
 public class OrderService {
 
 
@@ -79,7 +79,10 @@ public class OrderService {
         final Order order = new Order();
         order.setUser(user);
         order.setStartDate(request.getStartDate());
-        final LocalDate endDate = initBusinessArgs.getCompletionDate(request.getEndDate());
+         LocalDate endDate = initBusinessArgs.getCompletionDate(request.getEndDate());
+        if (endDate.isBefore(request.getStartDate())&&endDate.isEqual(request.getStartDate())){
+            endDate=request.getEndDate();
+        }
         order.setEndDate(endDate);
         order.setStatus("waits confirmation");
         final int discount = user.getUsersDescription().getRelationType()
