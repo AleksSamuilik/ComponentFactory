@@ -475,7 +475,7 @@ Response:
 
 Request:
 
-`PATCH /componentFactory/orders/{orderId}`
+`PUT /componentFactory/orders/{orderId}`
 
 Headers: Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpbWFAZW1haWwuY29tIiwiaWF0IjoxNTgxMDAwMTk4LCJleHAiOjE1ODEwODY1OTh9.Tq5maHNgMPAN9nZWTquXWV46TDKJocdU8b8uzvPZZhZN2wRHJR31W5LHQz87eApGcGmWda5PBEaMSNEYCPFs6w 
 

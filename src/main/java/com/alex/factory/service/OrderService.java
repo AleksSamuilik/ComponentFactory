@@ -19,8 +19,10 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,6 +95,15 @@ public class OrderService {
         final Order order = orderRepository.findById(orderId).orElseThrow(() -> new CompFactNoSuchElementException("Such order doesn't exist"));
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
+        }
+        if (request.getStartDate() != null) {
+            order.setStartDate(request.getStartDate());
+        }
+        if (request.getEndDate()!= null) {
+            order.setEndDate(request.getEndDate());
+        }
+        if (request.getCost() != null) {
+            order.setCost(request.getCost());
         }
         return orderRepository.save(order);
     }
