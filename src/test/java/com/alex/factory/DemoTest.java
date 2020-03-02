@@ -71,6 +71,8 @@ public class DemoTest {
         updateCostProduct();
         getOrdersForStatusAndCost();
         getOrdersForStatus();
+        updateCostOrder();
+        getOrdersForCost();
     }
 
     @SneakyThrows
@@ -432,20 +434,68 @@ public class DemoTest {
 
 
     @SneakyThrows
+    public void updateCostOrder() {
+
+        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "   \"orderId\":1,\n" +
+                        "   \"users\":{\n" +
+                        "      \"company\":\" ООО\\\"Аливария\\\"\",\n" +
+                        "      \"email\":\"vasya@email.com\"\n" +
+                        "   },\n" +
+                        "   \"startDate\":\"10.02.2020\",\n" +
+                        "   \"endDate\":\"12.03.2020\",\n" +
+                        "   \"cost\":1100000,\n" +
+                        "   \"status\":\"confirmed\",\n" +
+                        "   \"productDetails\":[\n" +
+                        "      {\n" +
+                        "         \"product\":{\n" +
+                        "            \"id\":10,\n" +
+                        "            \"name\":\"Бутылка\",\n" +
+                        "            \"primeCost\":60,\n" +
+                        "            \"type\":\"1.0\",\n" +
+                        "            \"category\":\"Тара для хранения\"\n" +
+                        "         },\n" +
+                        "         \"quantity\":10000\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "         \"product\":{\n" +
+                        "            \"id\":2,\n" +
+                        "            \"name\":\"Воздушный фильтр\",\n" +
+                        "            \"primeCost\":40,\n" +
+                        "            \"type\":\"0.1\",\n" +
+                        "            \"category\":\"Фильтрация и сорбирование\"\n" +
+                        "         },\n" +
+                        "         \"quantity\":4\n" +
+                        "      }\n" +
+                        "   ]\n" +
+                        "}"))
+                .andExpect(status().isOk());
+    }
+
+    @SneakyThrows
     public void getOrdersForCost() {
         updateStatusToCloseOrder();
-    mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
+      mockMvc.perform(post("/orders").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"cost\":1000000\n" +
                         "}"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(""));
+                .andExpect(content().json("{\n" +
+                        "   \"listOrdersCost\":[\n" +
+                        "      {\n" +
+                        "         \"id\":13,\n" +
+                        "         \"startDate\":\"10.02.2020\",\n" +
+                        "         \"endDate\":\"12.03.2020\",\n" +
+                        "         \"cost\":1100000,\n" +
+                        "         \"status\":\"confirmed\"\n" +
+                        "      }\n" +
+                        "   ]\n" +
+                        "}"));
+
     }
-
-
-
-
 
 
     @SneakyThrows
