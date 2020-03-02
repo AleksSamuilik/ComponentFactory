@@ -50,7 +50,7 @@ public class ProductController {
         return productService.getProduct(productId);
     }
 
-    @PutMapping(value = "/{productId}")
+    @PatchMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Update product", notes = "Use this method, if you want to update product")
     @ApiResponses(value = {

@@ -223,7 +223,7 @@ public class DemoTest {
     @SneakyThrows
     public void updateStatusToWorkOrder() {
 
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+        mockMvc.perform(patch("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isOk());
@@ -232,7 +232,7 @@ public class DemoTest {
     @SneakyThrows
     public void updateStatusToCloseOrder() {
 
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+        mockMvc.perform(patch("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"close\" }"))
                 .andExpect(status().isOk());
@@ -241,7 +241,7 @@ public class DemoTest {
     @SneakyThrows
     public void updateDataOrder() {
 
-        mockMvc.perform(put("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
+        mockMvc.perform(patch("/orders/" + createTestOrder()).header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{   \"endDate\":\"15.03.2020\",\n" +
                         "   \"cost\":900000\n" +
@@ -368,7 +368,7 @@ public class DemoTest {
     @SneakyThrows
     public void updateCostProduct() {
 
-        mockMvc.perform(put("/products/1").header("Authorization", tokenADMIN)
+        mockMvc.perform(patch("/products/1").header("Authorization", tokenADMIN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         " \"primeCost\":75\n" +

@@ -76,7 +76,7 @@ public class OrderController {
         return orderService.getOrder(orderId);
     }
 
-    @PutMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Update order data", notes = "Use this method, if you want to update order data")
     @ApiResponses(value = {

@@ -394,7 +394,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateStatusToWorkOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
+        mockMvc.perform(patch("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isOk());
@@ -404,7 +404,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateTimeAndCostOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
+        mockMvc.perform(patch("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{   \"endDate\":\"15.03.2020\",\n" +
                         "   \"cost\":900000\n" +
@@ -416,7 +416,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateStatusToCloseOrder1() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenPetya)
+        mockMvc.perform(patch("/orders/" + orderId).header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"close\" }"))
                 .andExpect(status().isOk());
@@ -427,7 +427,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateStatusWithoutNotAuthorisation() {
 
-        mockMvc.perform(put("/orders/" + orderId).header("Authorization", tokenVasya)
+        mockMvc.perform(patch("/orders/" + orderId).header("Authorization", tokenVasya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isForbidden());
@@ -530,7 +530,7 @@ public class AllTest {
     @SneakyThrows
     public void testUpdateCostProduct() {
 
-        mockMvc.perform(put("/products/1").header("Authorization", tokenPetya)
+        mockMvc.perform(patch("/products/1").header("Authorization", tokenPetya)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         " \"primeCost\":75\n" +
