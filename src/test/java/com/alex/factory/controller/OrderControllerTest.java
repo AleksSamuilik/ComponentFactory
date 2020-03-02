@@ -237,7 +237,7 @@ public class OrderControllerTest extends AbstractControllerTest {
         final Order order = getOrder();
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
         // when
-        mockMvc.perform(patch("/orders/1").header("Authorization", signInAsRoleAdmin())
+        mockMvc.perform(put("/orders/1").header("Authorization", signInAsRoleAdmin())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isOk());
@@ -254,7 +254,7 @@ public class OrderControllerTest extends AbstractControllerTest {
         final Order order = getOrder();
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
         // when
-        mockMvc.perform(patch("/orders/1").header("Authorization", signInAsRoleAdmin())
+        mockMvc.perform(put("/orders/1").header("Authorization", signInAsRoleAdmin())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{   \"endDate\":\"15.03.2020\",\n" +
                         "   \"cost\":900000\n" +
@@ -273,7 +273,7 @@ public class OrderControllerTest extends AbstractControllerTest {
         final Order order = getOrder();
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
         // when
-        mockMvc.perform(patch("/orders/1").header("Authorization", signInAsRoleAdmin())
+        mockMvc.perform(put("/orders/1").header("Authorization", signInAsRoleAdmin())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"close\" }"))
                 .andExpect(status().isOk());
@@ -286,7 +286,7 @@ public class OrderControllerTest extends AbstractControllerTest {
     @Test
     @SneakyThrows
     public void testUpdateStatusWithoutNotAuthorisation() {
-        mockMvc.perform(patch("/orders/1").header("Authorization", signInAsRoleUser())
+        mockMvc.perform(put("/orders/1").header("Authorization", signInAsRoleUser())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"status\":\"work\" }"))
                 .andExpect(status().isForbidden());

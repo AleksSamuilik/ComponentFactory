@@ -110,7 +110,7 @@ public class ProductControllerTest extends AbstractControllerTest {
         final Product product = getProductsById(1l);
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
         // when
-        mockMvc.perform(patch("/products/1").header("Authorization", signInAsRoleAdmin())
+        mockMvc.perform(put("/products/1").header("Authorization", signInAsRoleAdmin())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         " \"primeCost\":75\n" +

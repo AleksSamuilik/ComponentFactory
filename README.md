@@ -614,15 +614,15 @@ Response:
 
 ```json
 {
-      "listOrdersStatusAndCost":[
-         {
-            "id":11,
-            "startDate":"12.02.2020",
-            "endDate":"12.03.2020",
-            "cost":945201,
-            "status":"close"
-         }
-      ]
+   "listOrdersCost":[
+      {
+         "id":13,
+         "startDate":"10.02.2020",
+         "endDate":"12.03.2020",
+         "cost":1100000,
+         "status":"confirmed"
+      }
+   ]
 }
 ```
 

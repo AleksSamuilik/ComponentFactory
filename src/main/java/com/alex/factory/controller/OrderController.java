@@ -76,7 +76,7 @@ public class OrderController {
         return orderService.getOrder(orderId);
     }
 
-    @PatchMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Update order data", notes = "Use this method, if you want to update order data")
     @ApiResponses(value = {
@@ -113,18 +113,5 @@ public class OrderController {
     })
     public void delOrder(@PathVariable final Long orderId) throws CompFactOrderNotFoundException {
         orderService.delOrder(orderId);
-    }
-
-    @PutMapping(value = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Update order data", notes = "Use this method, if you want to update order data")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully update order data"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
-    })
-    public void updateFullOrder(@Valid @RequestBody UpdateOrderDTO request, @PathVariable final Long orderId) throws CompFactNoSuchElementException {
-        orderService.updateOrder(orderId, request);
     }
 }
